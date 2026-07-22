@@ -76,32 +76,15 @@ tql-threat-hunting-kb/
 └── CHANGELOG.md                  # histórico de versões
 ```
 
-## Publicar num repositório privado (git)
+## Clonar e usar
 
-Este projeto já vem com git inicializado e um commit inicial. Para subir num repositório **privado** (GitHub / GitLab da empresa):
-
-```bash
-# 1) Crie um repositório PRIVADO e VAZIO no seu GitHub/GitLab (sem README, sem .gitignore).
-
-# 2) Aponte o remote para ele e faça o push:
-git remote add origin <URL_DO_SEU_REPO_PRIVADO>.git
-git branch -M main
-git push -u origin main
-```
-
-Se preferir começar do zero (sem o histórico que veio no pacote):
+Time interno, é só clonar:
 
 ```bash
-rm -rf .git
-git init
-git add .
-git commit -m "Base de conhecimento TQL Threat Hunting"
-git branch -M main
-git remote add origin <URL_DO_SEU_REPO_PRIVADO>.git
-git push -u origin main
+git clone https://github.com/VictorGiatti/tql-threat-hunting-kb.git
 ```
 
-> Depois do push, o GitHub/GitLab renderiza todos os `.md` automaticamente, a base fica navegável pelo próprio site do repositório.
+Depois, abra `painel/tql-threat-hunting.html` no navegador (busca, filtro por tática, copiar-query) ou navegue os `.md` direto aqui pelo GitHub, que ele renderiza tudo. Pra somar um hunt novo, veja o [guia de contribuição](CONTRIBUTING.md).
 
 ## Aviso
 
