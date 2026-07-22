@@ -59,7 +59,7 @@ Se preferir montar visualmente antes de escrever o Markdown:
 git checkout -b hunt/nome-curto
 # edite os arquivos
 git add .
-git commit -m "hunt: <categoria> — <título>"
+git commit -m "hunt: <categoria> - <título>"
 git push -u origin hunt/nome-curto
 # abra um Pull Request para revisão
 ```
