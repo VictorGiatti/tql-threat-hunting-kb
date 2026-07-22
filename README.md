@@ -4,6 +4,8 @@ Consultas de caça a ameaças (threat hunting) para o **Trend Vision One → XDR
 
 **149 hunts · 17 categorias · cola de consultas · painel interativo**
 
+![Painel interativo de threat hunting em TQL](painel/preview.png)
+
 ---
 
 ## O que é isto
