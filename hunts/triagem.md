@@ -1,4 +1,4 @@
-# Triagem — Threat Hunting TQL
+# Triagem · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -20,7 +20,7 @@ datasource("xdr") with (log_type="detection")
 
 ## Detecções que não foram bloqueadas
 
-Ameaça média/alta cujo actionStatus não é 'blocked' — pode ter passado.
+Ameaça média/alta cujo actionStatus não é 'blocked': pode ter passado.
 
 ```text
 datasource("xdr") with (log_type="detection")
@@ -66,7 +66,7 @@ datasource("xdr") with (log_type="detection")
 
 ## Regras que mais dispararam
 
-Candidatas a tuning ou a foco — por ruleName.
+Candidatas a tuning ou a foco, por ruleName.
 
 ```text
 datasource("xdr") with (log_type="detection")
@@ -79,7 +79,7 @@ datasource("xdr") with (log_type="detection")
 
 ## Hosts com mais detecções
 
-Onde concentrar a investigação — por endpoint.
+Onde concentrar a investigação, por endpoint.
 
 ```text
 datasource("xdr") with (log_type="detection")
@@ -92,7 +92,7 @@ datasource("xdr") with (log_type="detection")
 
 ## Detecções por produto
 
-De onde vêm os alertas — por pname.
+De onde vêm os alertas, por pname.
 
 ```text
 datasource("xdr") with (log_type="detection")

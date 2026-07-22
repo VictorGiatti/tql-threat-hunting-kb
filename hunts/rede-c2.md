@@ -1,10 +1,10 @@
-# Rede / C2 — Threat Hunting TQL
+# Rede / C2 · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
 > Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
 
-## Beaconing — hosts muito falantes
+## Beaconing · hosts muito falantes
 
 **MITRE ATT&CK:** `T1071`
 
@@ -24,7 +24,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1090 / T1572`
 
-ngrok, frpc, chisel, cloudflared — túneis usados pra exfil/C2.
+ngrok, frpc, chisel, cloudflared: túneis usados pra exfil/C2.
 
 ```text
 datasource("xdr")
@@ -42,7 +42,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1219`
 
-AnyDesk, TeamViewer, ScreenConnect, Atera — abuso de RMM pra C2.
+AnyDesk, TeamViewer, ScreenConnect, Atera: abuso de RMM pra C2.
 
 ```text
 datasource("xdr")
@@ -60,7 +60,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1059`
 
-nc/ncat, /dev/tcp, TcpClient, bash -i — shell reverso.
+nc/ncat, /dev/tcp, TcpClient, bash -i: shell reverso.
 
 ```text
 datasource("xdr")
@@ -96,7 +96,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1071.004`
 
-nslookup pedindo TXT — indício de C2/exfil por DNS.
+nslookup pedindo TXT, indício de C2/exfil por DNS.
 
 ```text
 datasource("xdr")
@@ -114,7 +114,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1071`
 
-Total de conexões por host em 24h — ranking de quem mais fala com a rede.
+Total de conexões por host em 24h, ranking de quem mais fala com a rede.
 
 ```text
 datasource("xdr")
@@ -130,7 +130,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1090`
 
-netsh portproxy, plink -R, ssh -R — pivô/encaminhamento de porta.
+netsh portproxy, plink -R, ssh -R: pivô/encaminhamento de porta.
 
 ```text
 datasource("xdr")

@@ -1,4 +1,4 @@
-# Descoberta — Threat Hunting TQL
+# Descoberta · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -25,7 +25,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1087.002`
 
-AdFind, SharpHound/BloodHound, dsquery, nltest — mapeamento do domínio.
+AdFind, SharpHound/BloodHound, dsquery, nltest: mapeamento do domínio.
 
 ```text
 datasource("xdr")
@@ -43,7 +43,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1135 / T1049`
 
-net view/share/use, sessions, arp — mapeando o que dá pra alcançar.
+net view/share/use, sessions, arp: mapeando o que dá pra alcançar.
 
 ```text
 datasource("xdr")
@@ -61,7 +61,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1057 / T1007`
 
-tasklist, sc query, Get-Process/Get-Service — mapeando o que roda.
+tasklist, sc query, Get-Process/Get-Service: mapeando o que roda.
 
 ```text
 datasource("xdr")
@@ -97,7 +97,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1482`
 
-nltest /domain_trusts, Get-ADTrust — mapear relações entre domínios.
+nltest /domain_trusts, Get-ADTrust: mapear relações entre domínios.
 
 ```text
 datasource("xdr")
@@ -133,7 +133,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1018`
 
-Ping sweep, nmap, Test-Connection — mapeando hosts na rede.
+Ping sweep, nmap, Test-Connection: mapeando hosts na rede.
 
 ```text
 datasource("xdr")
@@ -151,7 +151,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1083`
 
-dir /s, tree, Get-ChildItem -Recurse — varredura do disco.
+dir /s, tree, Get-ChildItem -Recurse: varredura do disco.
 
 ```text
 datasource("xdr")
@@ -167,9 +167,9 @@ datasource("xdr")
 
 ## Enumeração de tarefas agendadas
 
-**MITRE ATT&CK:** `T1046`
+**MITRE ATT&CK:** —
 
-schtasks /query, Get-ScheduledTask — inventário de agendamentos.
+schtasks /query, Get-ScheduledTask: inventário de agendamentos.
 
 ```text
 datasource("xdr")

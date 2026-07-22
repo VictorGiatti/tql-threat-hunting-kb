@@ -1,4 +1,4 @@
-# Movimento lateral — Threat Hunting TQL
+# Movimento lateral · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -44,7 +44,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1021.001`
 
-mstsc /v, tscon, qwinsta — uso de RDP e sequestro de sessão.
+mstsc /v, tscon, qwinsta: uso de RDP e sequestro de sessão.
 
 ```text
 datasource("xdr")
@@ -62,7 +62,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1021.002`
 
-copy/robocopy para C$, ADMIN$, IPC$ — staging em host remoto.
+copy/robocopy para C$, ADMIN$, IPC$: staging em host remoto.
 
 ```text
 datasource("xdr")
@@ -99,7 +99,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1021.003`
 
-MMC20.Application, Excel.Application, ShellWindows — lateral por DCOM.
+MMC20.Application, Excel.Application, ShellWindows: lateral por DCOM.
 
 ```text
 datasource("xdr")
@@ -117,7 +117,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1053.005`
 
-schtasks /s <host> — cria/roda tarefa em máquina remota.
+schtasks /s <host>: cria/roda tarefa em máquina remota.
 
 ```text
 datasource("xdr")
@@ -135,7 +135,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1543.003`
 
-Novo serviço instalado — artefato clássico de PsExec/execução remota.
+Novo serviço instalado, artefato clássico de PsExec/execução remota.
 
 ```text
 datasource("xdr") with (log_type="systemevent")

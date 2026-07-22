@@ -51,7 +51,7 @@ Se preferir montar visualmente antes de escrever o Markdown:
 }
 ```
 
-4. Cole o JSON no Pull Request (ou mande pro mantenedor) — dá pra converter em Markdown e embutir na base fixa.
+4. Cole o JSON no Pull Request (ou mande pro mantenedor), dá pra converter em Markdown e embutir na base fixa.
 
 ## Fluxo git sugerido
 

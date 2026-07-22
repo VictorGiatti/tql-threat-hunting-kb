@@ -1,4 +1,4 @@
-# Base de Conhecimento — Threat Hunting com TQL
+# Base de Conhecimento · Threat Hunting com TQL
 
 Consultas de caça a ameaças (threat hunting) para o **Trend Vision One → XDR Data Explorer**, escritas em **TQL (Trend Query Language)** e organizadas por tática **MITRE ATT&CK**.
 
@@ -8,9 +8,9 @@ Consultas de caça a ameaças (threat hunting) para o **Trend Vision One → XDR
 
 ## O que é isto
 
-Uma base de conhecimento versionável para o time: cada hunt tem título, técnica MITRE, uma linha de descrição e a query TQL pronta pra copiar e rodar. A ideia é **ir alimentando** — todo mundo contribui com os hunts que funcionam no dia a dia.
+Uma base de conhecimento versionável para o time: cada hunt tem título, técnica MITRE, uma linha de descrição e a query TQL pronta pra copiar e rodar. A ideia é **ir alimentando**, todo mundo contribui com os hunts que funcionam no dia a dia.
 
-> **Contexto (importante):** os métodos antigos de busca por *activity data* do Vision One serão **aposentados no fim de setembro de 2026**. Depois disso, o TQL com as fontes de dados expandidas passa a ser o caminho padrão — motivo a mais pra concentrar os hunts do time aqui.
+> **Contexto (importante):** os métodos antigos de busca por *activity data* do Vision One serão **aposentados no fim de setembro de 2026**. Depois disso, o TQL com as fontes de dados expandidas passa a ser o caminho padrão, motivo a mais pra concentrar os hunts do time aqui.
 
 A fonte dos dados é o **Data Lake do Vision One**, que reúne telemetria nativa (endpoint, identidade, e-mail, rede) **e logs de terceiros** (Fortigate, Check Point, Defender etc.). Ou seja: o mesmo hunt roda sobre tudo que está ingerido.
 
@@ -21,15 +21,15 @@ A fonte dos dados é o **Data Lake do Vision One**, que reúne telemetria nativa
 3. Copie a query do hunt, cole e clique **Run query**.
 4. Ajuste a janela de tempo (`ago(1h)` → `ago(1d)` → `ago(7d)`) conforme o volume.
 
-> Prefere clicar em vez de navegar por arquivos? Abra [`painel/tql-threat-hunting.html`](painel/tql-threat-hunting.html) no navegador — é o mesmo conteúdo com busca, filtro por tática, copiar-query e um formulário pra adicionar os seus próprios hunts (salvos no navegador).
+> Prefere clicar em vez de navegar por arquivos? Abra [`painel/tql-threat-hunting.html`](painel/tql-threat-hunting.html) no navegador: é o mesmo conteúdo com busca, filtro por tática, copiar-query e um formulário pra adicionar os seus próprios hunts (salvos no navegador).
 
 ## Regras de ouro
 
-- Sempre que souber, especifique `with (log_type="…", product_code="…")` — são filtros "de graça" e deixam a query muito mais rápida.
+- Sempre que souber, especifique `with (log_type="…", product_code="…")`: são filtros "de graça" e deixam a query muito mais rápida.
 - Comece com janela curta e use `project` cedo pra trazer só as colunas necessárias.
 - Ordene os filtros do barato pro caro: `==` e `in` antes de `contains` / `matches regex`.
 - Campo em array (ex.: `tags`): use `has` (ou `has_any`), nunca `contains`.
-- Depois de `summarize ... by X`, só existem `X` e a métrica agregada — não dê `project` em coluna que o summarize removeu.
+- Depois de `summarize ... by X`, só existem `X` e a métrica agregada: não dê `project` em coluna que o summarize removeu.
 - **Zero resultado também é resposta**: quer dizer que o padrão não apareceu naquela janela.
 
 Mais detalhes em [`sintaxe-e-performance.md`](sintaxe-e-performance.md).
@@ -101,11 +101,11 @@ git remote add origin <URL_DO_SEU_REPO_PRIVADO>.git
 git push -u origin main
 ```
 
-> Depois do push, o GitHub/GitLab renderiza todos os `.md` automaticamente — a base fica navegável pelo próprio site do repositório.
+> Depois do push, o GitHub/GitLab renderiza todos os `.md` automaticamente, a base fica navegável pelo próprio site do repositório.
 
 ## Aviso
 
-São **consultas de exemplo**. Nomes de campo variam por fonte e schema — valide no editor (o autocomplete sugere os campos certos de cada `log_type`). Ajuste as janelas de tempo conforme o volume do ambiente.
+São **consultas de exemplo**. Nomes de campo variam por fonte e schema, valide no editor (o autocomplete sugere os campos certos de cada `log_type`). Ajuste as janelas de tempo conforme o volume do ambiente.
 
 ---
 

@@ -1,4 +1,4 @@
-# Escalonamento de privilégio — Threat Hunting TQL
+# Escalonamento de privilégio · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -8,7 +8,7 @@
 
 **MITRE ATT&CK:** `T1068`
 
-spoolsv.exe como pai de cmd/powershell/rundll32 — exploração do spooler.
+spoolsv.exe como pai de cmd/powershell/rundll32: exploração do spooler.
 
 ```text
 datasource("xdr")
@@ -27,7 +27,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1134.001`
 
-JuicyPotato, PrintSpoofer, RoguePotato, GodPotato — abuso de privilégio.
+JuicyPotato, PrintSpoofer, RoguePotato, GodPotato: abuso de privilégio.
 
 ```text
 datasource("xdr")
@@ -63,7 +63,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1078`
 
-runas /user ou /savecred — execução com outra identidade.
+runas /user ou /savecred: execução com outra identidade.
 
 ```text
 datasource("xdr")
@@ -81,7 +81,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1543.003`
 
-sc create com binPath pra cmd/powershell — executa como SYSTEM.
+sc create com binPath pra cmd/powershell: executa como SYSTEM.
 
 ```text
 datasource("xdr")
@@ -99,7 +99,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1053.005`
 
-schtasks /create /ru system — persistência/execução privilegiada.
+schtasks /create /ru system: persistência/execução privilegiada.
 
 ```text
 datasource("xdr")

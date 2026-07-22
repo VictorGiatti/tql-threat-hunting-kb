@@ -1,4 +1,4 @@
-# Coleta — Threat Hunting TQL
+# Coleta · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -26,7 +26,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1560.001`
 
-rar/7z com -hp/-p — compacta com senha pra dificultar inspeção.
+rar/7z com -hp/-p: compacta com senha pra dificultar inspeção.
 
 ```text
 datasource("xdr")
@@ -62,7 +62,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1115`
 
-Get-Clipboard, clip.exe — roubo de conteúdo copiado.
+Get-Clipboard, clip.exe: roubo de conteúdo copiado.
 
 ```text
 datasource("xdr")

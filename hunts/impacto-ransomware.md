@@ -1,4 +1,4 @@
-# Impacto / Ransomware — Threat Hunting TQL
+# Impacto / Ransomware · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -8,7 +8,7 @@
 
 **MITRE ATT&CK:** `T1490`
 
-vssadmin/wmic apagando cópias de sombra — impede recuperação.
+vssadmin/wmic apagando cópias de sombra: impede recuperação.
 
 ```text
 datasource("xdr")
@@ -44,7 +44,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1070`
 
-fsutil usn deletejournal — apaga trilha de alterações de arquivo.
+fsutil usn deletejournal, apaga trilha de alterações de arquivo.
 
 ```text
 datasource("xdr")
@@ -62,7 +62,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1485`
 
-cipher /w sobrescreve espaço livre — destruição de dados.
+cipher /w sobrescreve espaço livre: destruição de dados.
 
 ```text
 datasource("xdr")
@@ -80,7 +80,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1489`
 
-net stop/Stop-Service em SQL, Exchange, Veeam, backup — antes de criptografar.
+net stop/Stop-Service em SQL, Exchange, Veeam, backup: antes de criptografar.
 
 ```text
 datasource("xdr")
@@ -116,7 +116,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1491`
 
-reg add mexendo em Control Panel\Desktop Wallpaper — comum em ransomware.
+reg add mexendo em Control Panel\Desktop Wallpaper, comum em ransomware.
 
 ```text
 datasource("xdr")

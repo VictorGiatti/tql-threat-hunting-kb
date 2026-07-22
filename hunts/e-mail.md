@@ -1,4 +1,4 @@
-# E-mail — Threat Hunting TQL
+# E-mail · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -41,7 +41,7 @@ datasource("xdr") with (log_type="messaging")
 
 **MITRE ATT&CK:** `T1566`
 
-Quem mais recebe ameaça — candidatos a alvo dirigido.
+Quem mais recebe ameaça, candidatos a alvo dirigido.
 
 ```text
 datasource("xdr") with (log_type="messaging")
@@ -90,7 +90,7 @@ datasource("xdr") with (log_type="messaging")
 
 **MITRE ATT&CK:** `T1566.002`
 
-Compara o link exibido com o link real — divergência = phishing clássico.
+Compara o link exibido com o link real, divergência = phishing clássico.
 
 ```text
 datasource("xdr") with (log_type="messaging")
@@ -107,7 +107,7 @@ datasource("xdr") with (log_type="messaging")
 
 **MITRE ATT&CK:** `T1566`
 
-Reply-To presente pra revisar divergência com o From — sinal de BEC/spoofing.
+Reply-To presente pra revisar divergência com o From, sinal de BEC/spoofing.
 
 ```text
 datasource("xdr") with (log_type="messaging")
@@ -141,7 +141,7 @@ datasource("xdr") with (log_type="messaging")
 
 **MITRE ATT&CK:** `T1566`
 
-Agrupa por X-Mailer — mass mailers e ferramentas de phishing se destacam.
+Agrupa por X-Mailer, mass mailers e ferramentas de phishing se destacam.
 
 ```text
 datasource("xdr") with (log_type="messaging")
@@ -155,7 +155,7 @@ datasource("xdr") with (log_type="messaging")
 
 ## E-mail sem TLS (transporte em claro)
 
-Mensagens sem TLS no transporte — exposição de conteúdo.
+Mensagens sem TLS no transporte, exposição de conteúdo.
 
 ```text
 datasource("xdr") with (log_type="messaging")
@@ -169,7 +169,7 @@ datasource("xdr") with (log_type="messaging")
 
 ## Volume de e-mail por hora (gráfico)
 
-Baseline do fluxo de e-mail — picos podem indicar surto/campanha.
+Baseline do fluxo de e-mail, picos podem indicar surto/campanha.
 
 ```text
 datasource("xdr") with (log_type="messaging")
@@ -185,7 +185,7 @@ datasource("xdr") with (log_type="messaging")
 
 **MITRE ATT&CK:** `T1566`
 
-Ameaça por mailMsgDirection — saída com ameaça pode ser conta comprometida.
+Ameaça por mailMsgDirection, saída com ameaça pode ser conta comprometida.
 
 ```text
 datasource("xdr") with (log_type="messaging")
@@ -198,7 +198,7 @@ datasource("xdr") with (log_type="messaging")
 
 ## Regras de e-mail que mais dispararam
 
-Agrupa por mailRuleId — vê quais políticas estão pegando o quê.
+Agrupa por mailRuleId, vê quais políticas estão pegando o quê.
 
 ```text
 datasource("xdr") with (log_type="messaging")

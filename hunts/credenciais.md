@@ -1,4 +1,4 @@
-# Credenciais — Threat Hunting TQL
+# Credenciais · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -25,7 +25,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1003.001`
 
-mimikatz, comsvcs MiniDump, procdump, nanodump — extração de credencial.
+mimikatz, comsvcs MiniDump, procdump, nanodump: extração de credencial.
 
 ```text
 datasource("xdr")
@@ -95,7 +95,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1558.003`
 
-Rubeus, GetUserSPNs, kerberoast, asreproast — abuso de tickets Kerberos.
+Rubeus, GetUserSPNs, kerberoast, asreproast: abuso de tickets Kerberos.
 
 ```text
 datasource("xdr")
@@ -113,7 +113,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1003.006`
 
-lsadump::dcsync / drsuapi — replicação maliciosa pra roubar hashes do DC.
+lsadump::dcsync / drsuapi: replicação maliciosa pra roubar hashes do DC.
 
 ```text
 datasource("xdr")
@@ -131,7 +131,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1555`
 
-vaultcmd, cmdkey /list, DPAPI — extração de segredos armazenados.
+vaultcmd, cmdkey /list, DPAPI: extração de segredos armazenados.
 
 ```text
 datasource("xdr")

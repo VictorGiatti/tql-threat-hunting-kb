@@ -1,10 +1,10 @@
-# Firewall (3rd-party) — Threat Hunting TQL
+# Firewall (3rd-party) · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
 > Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
 
-## Fortigate — tipos de evento
+## Fortigate · tipos de evento
 
 Atividade do Fortigate agregada (o seu maior volume de terceiro).
 
@@ -18,7 +18,7 @@ datasource("xdr") with (log_type="thirdparty")
 
 ---
 
-## Fortigate — por ação (vendorParsed)
+## Fortigate · por ação (vendorParsed)
 
 Usa o campo parseado do fornecedor pra ver allow/deny. Ensina vendorParsed + tostring + extend.
 
@@ -33,7 +33,7 @@ datasource("xdr") with (log_type="thirdparty")
 
 ---
 
-## Check Point — tipos de evento
+## Check Point · tipos de evento
 
 Atividade do Check Point (VPN-1 & FireWall-1).
 
@@ -47,7 +47,7 @@ datasource("xdr") with (log_type="thirdparty")
 
 ---
 
-## Terceiros — volume por vendor e produto
+## Terceiros · volume por vendor e produto
 
 Panorama de todos os terceiros que estão mandando log.
 
@@ -60,7 +60,7 @@ datasource("xdr") with (log_type="thirdparty")
 
 ---
 
-## Fortigate — top IPs de destino (vendorParsed)
+## Fortigate · top IPs de destino (vendorParsed)
 
 Extrai o IP de destino parseado pra ver pra onde o tráfego vai.
 
@@ -75,9 +75,9 @@ datasource("xdr") with (log_type="thirdparty")
 
 ---
 
-## Terceiros — eventos por coletor
+## Terceiros · eventos por coletor
 
-Volume por collectorName — vê quais coletores estão ativos.
+Volume por collectorName, vê quais coletores estão ativos.
 
 ```text
 datasource("xdr") with (log_type="thirdparty")

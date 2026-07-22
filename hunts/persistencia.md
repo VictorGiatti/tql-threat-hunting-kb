@@ -1,4 +1,4 @@
-# Persistência — Threat Hunting TQL
+# Persistência · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -59,7 +59,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1546.003`
 
-__EventFilter / EventConsumer — persistência furtiva via WMI.
+__EventFilter / EventConsumer: persistência furtiva via WMI.
 
 ```text
 datasource("xdr")
@@ -113,7 +113,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1547.004`
 
-reg add em Userinit/Shell/Winlogon — execução no logon.
+reg add em Userinit/Shell/Winlogon: execução no logon.
 
 ```text
 datasource("xdr")
@@ -132,7 +132,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1546.012`
 
-Image File Execution Options com Debugger — dispara binário no lugar de outro.
+Image File Execution Options com Debugger, dispara binário no lugar de outro.
 
 ```text
 datasource("xdr")
@@ -169,7 +169,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1546.008`
 
-Substituição/depurador de sethc.exe/utilman.exe — backdoor na tela de logon.
+Substituição/depurador de sethc.exe/utilman.exe: backdoor na tela de logon.
 
 ```text
 datasource("xdr")
@@ -188,7 +188,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1197`
 
-bitsadmin SetNotifyCmdLine — reexecuta comando quando o job completa.
+bitsadmin SetNotifyCmdLine, reexecuta comando quando o job completa.
 
 ```text
 datasource("xdr")

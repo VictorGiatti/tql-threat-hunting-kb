@@ -1,0 +1,4 @@
+# Normaliza fim de linha: repositório em LF, sem ruído de CRLF do Windows
+* text=auto eol=lf
+*.png binary
+*.ico binary

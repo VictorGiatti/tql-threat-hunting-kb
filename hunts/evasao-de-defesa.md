@@ -1,4 +1,4 @@
-# Evasão de defesa — Threat Hunting TQL
+# Evasão de defesa · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -26,7 +26,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1562.001`
 
-Add-MpPreference -ExclusionPath/Process — criando ponto cego.
+Add-MpPreference -ExclusionPath/Process: criando ponto cego.
 
 ```text
 datasource("xdr")
@@ -62,7 +62,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1562.004`
 
-netsh advfirewall set ... off — abrindo a máquina.
+netsh advfirewall set ... off, abrindo a máquina.
 
 ```text
 datasource("xdr")
@@ -80,7 +80,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1548.002`
 
-fodhelper, computerdefaults, eventvwr, sdclt, slui — bypass de UAC.
+fodhelper, computerdefaults, eventvwr, sdclt, slui: bypass de UAC.
 
 ```text
 datasource("xdr")
@@ -208,7 +208,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1553.005`
 
-Unblock-File / remoção de Zone.Identifier — tira o aviso de arquivo baixado.
+Unblock-File / remoção de Zone.Identifier: tira o aviso de arquivo baixado.
 
 ```text
 datasource("xdr")

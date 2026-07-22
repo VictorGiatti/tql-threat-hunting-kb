@@ -1,4 +1,4 @@
-# Visão geral — Threat Hunting TQL
+# Visão geral · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -32,7 +32,7 @@ datasource("xdr")
 
 ## Volume por categoria de evento
 
-Distribuição por eventCategory — o que mais chega.
+Distribuição por eventCategory, o que mais chega.
 
 ```text
 datasource("xdr")
@@ -45,7 +45,7 @@ datasource("xdr")
 
 ## Ingestão de terceiros por hora (gráfico)
 
-Linha do tempo da ingestão por fornecedor — mostra a agregação viva.
+Linha do tempo da ingestão por fornecedor, mostra a agregação viva.
 
 ```text
 datasource("xdr") with (log_type="thirdparty")
@@ -84,7 +84,7 @@ datasource("xdr") with (log_type="thirdparty")
 
 ## Volume total por dia (gráfico)
 
-Tendência de ingestão diária — quedas podem indicar fonte parada.
+Tendência de ingestão diária, quedas podem indicar fonte parada.
 
 ```text
 datasource("xdr")
@@ -106,7 +106,6 @@ datasource("xdr") with (log_type="thirdparty")
 | where collectorName == "Windows_OS"
 | extend VendorCategory = tostring(vendorParsed.Category)
 | summarize Total = count() by VendorCategory
-| project VendorCategory, Total
 | top 10 by Total desc
 ```
 

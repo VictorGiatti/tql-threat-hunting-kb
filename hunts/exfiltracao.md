@@ -1,4 +1,4 @@
-# Exfiltração — Threat Hunting TQL
+# Exfiltração · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -8,7 +8,7 @@
 
 **MITRE ATT&CK:** `T1567`
 
-rclone, megacmd, aws s3 cp, az storage upload — exfil pra storage em nuvem.
+rclone, megacmd, aws s3 cp, az storage upload: exfil pra storage em nuvem.
 
 ```text
 datasource("xdr")
@@ -26,7 +26,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1048`
 
-ftp put, WinSCP, pscp, curl -T — envio de arquivos pra fora.
+ftp put, WinSCP, pscp, curl -T: envio de arquivos pra fora.
 
 ```text
 datasource("xdr")
@@ -62,7 +62,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1567.002`
 
-transfer.sh, pastebin, anonfiles, wetransfer, 0x0.st — dropzones de exfil.
+transfer.sh, pastebin, anonfiles, wetransfer, 0x0.st: dropzones de exfil.
 
 ```text
 datasource("xdr")

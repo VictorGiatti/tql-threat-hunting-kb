@@ -1,4 +1,4 @@
-# Base de Hunts — índice
+# Base de Hunts · índice
 
 **149 hunts** em **17 categorias**. Ative o toggle **"Use Trend Query Language"** antes de rodar.
 
@@ -90,7 +90,7 @@
 | `T1201` | [Política de senha / contas](descoberta.md) | Descoberta |
 | `T1018` | [Descoberta de sistemas remotos](descoberta.md) | Descoberta |
 | `T1083` | [Descoberta de arquivos e pastas](descoberta.md) | Descoberta |
-| `T1046` | [Enumeração de tarefas agendadas](descoberta.md) | Descoberta |
+| — | [Enumeração de tarefas agendadas](descoberta.md) | Descoberta |
 | `T1021.002 / T1570` | [PsExec / execução remota](movimento-lateral.md) | Movimento lateral |
 | `T1021.006` | [WinRM / execução remota PowerShell](movimento-lateral.md) | Movimento lateral |
 | `T1021.001` | [RDP interativo / hijack de sessão](movimento-lateral.md) | Movimento lateral |
@@ -104,7 +104,7 @@
 | `T1113` | [Captura de tela](coleta.md) | Coleta |
 | `T1115` | [Acesso à área de transferência](coleta.md) | Coleta |
 | `T1074` | [Staging em pasta temporária](coleta.md) | Coleta |
-| `T1071` | [Beaconing — hosts muito falantes](rede-c2.md) | Rede / C2 |
+| `T1071` | [Beaconing, hosts muito falantes](rede-c2.md) | Rede / C2 |
 | `T1090 / T1572` | [Túnel / anonymizer (processos)](rede-c2.md) | Rede / C2 |
 | `T1219` | [Ferramentas de acesso remoto (RMM)](rede-c2.md) | Rede / C2 |
 | `T1059` | [Reverse shell (one-liner)](rede-c2.md) | Rede / C2 |
@@ -132,7 +132,7 @@
 | `T1078` | [Top contas por volume de sign-in](identidade.md) | Identidade |
 | — | [Sign-ins por hora (gráfico)](identidade.md) | Identidade |
 | — | [Sign-ins por motivo de status](identidade.md) | Identidade |
-| `T1136.003` | [IP servindo muitas contas (make_set)](identidade.md) | Identidade |
+| `T1110.003` | [IP servindo muitas contas (make_set)](identidade.md) | Identidade |
 | — | [Eventos de identidade por tipo](identidade.md) | Identidade |
 | `T1566` | [Panorama: ameaças por tipo](e-mail.md) | E-mail |
 | `T1566` | [Remetentes mais tóxicos](e-mail.md) | E-mail |
@@ -155,12 +155,12 @@
 | — | [CloudTrail: logins de console por hora](nuvem.md) | Nuvem |
 | — | [CloudTrail: chamadas mais frequentes](nuvem.md) | Nuvem |
 | `T1578` | [CloudTrail: mudança em compute](nuvem.md) | Nuvem |
-| — | [Fortigate — tipos de evento](firewall-3rd-party.md) | Firewall (3rd-party) |
-| — | [Fortigate — por ação (vendorParsed)](firewall-3rd-party.md) | Firewall (3rd-party) |
-| — | [Check Point — tipos de evento](firewall-3rd-party.md) | Firewall (3rd-party) |
-| — | [Terceiros — volume por vendor e produto](firewall-3rd-party.md) | Firewall (3rd-party) |
-| — | [Fortigate — top IPs de destino (vendorParsed)](firewall-3rd-party.md) | Firewall (3rd-party) |
-| — | [Terceiros — eventos por coletor](firewall-3rd-party.md) | Firewall (3rd-party) |
+| — | [Fortigate, tipos de evento](firewall-3rd-party.md) | Firewall (3rd-party) |
+| — | [Fortigate, por ação (vendorParsed)](firewall-3rd-party.md) | Firewall (3rd-party) |
+| — | [Check Point, tipos de evento](firewall-3rd-party.md) | Firewall (3rd-party) |
+| — | [Terceiros, volume por vendor e produto](firewall-3rd-party.md) | Firewall (3rd-party) |
+| — | [Fortigate, top IPs de destino (vendorParsed)](firewall-3rd-party.md) | Firewall (3rd-party) |
+| — | [Terceiros, eventos por coletor](firewall-3rd-party.md) | Firewall (3rd-party) |
 | — | [Detecções de alta severidade](triagem.md) | Triagem |
 | — | [Detecções que não foram bloqueadas](triagem.md) | Triagem |
 | `pivot` | [Pivot por técnica MITRE (tags)](triagem.md) | Triagem |

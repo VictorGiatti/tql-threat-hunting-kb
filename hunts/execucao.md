@@ -1,4 +1,4 @@
-# Execução — Threat Hunting TQL
+# Execução · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -8,7 +8,7 @@
 
 **MITRE ATT&CK:** `T1059.001`
 
-Comando PowerShell ofuscado em base64 — evasão clássica de defesa.
+Comando PowerShell ofuscado em base64, evasão clássica de defesa.
 
 ```text
 datasource("xdr")
@@ -79,7 +79,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1059 / T1566.001`
 
-Word/Excel/Outlook iniciando powershell/cmd/wscript — assinatura de macro maliciosa.
+Word/Excel/Outlook iniciando powershell/cmd/wscript: assinatura de macro maliciosa.
 
 ```text
 datasource("xdr")
@@ -98,7 +98,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1059`
 
-Scripts (.ps1/.vbs/.js/.hta/.bat) executados a partir de AppData — típico de dropper.
+Scripts (.ps1/.vbs/.js/.hta/.bat) executados a partir de AppData: típico de dropper.
 
 ```text
 datasource("xdr")
@@ -117,7 +117,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1070.001`
 
-wevtutil cl / Clear-EventLog — apagar rastros.
+wevtutil cl / Clear-EventLog: apagar rastros.
 
 ```text
 datasource("xdr")
@@ -134,7 +134,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1218.005`
 
-mshta chamando http/javascript/vbscript — execução de HTA malicioso.
+mshta chamando http/javascript/vbscript: execução de HTA malicioso.
 
 ```text
 datasource("xdr")
@@ -172,7 +172,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1218.010`
 
-regsvr32 com /i: apontando pra scrobj.dll ou URL — bypass de whitelisting.
+regsvr32 com /i: apontando pra scrobj.dll ou URL: bypass de whitelisting.
 
 ```text
 datasource("xdr")
@@ -191,7 +191,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1059.005 / T1059.007`
 
-Windows Script Host executando .vbs/.js/.wsf — dropper comum.
+Windows Script Host executando .vbs/.js/.wsf: dropper comum.
 
 ```text
 datasource("xdr")
@@ -247,7 +247,7 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1059.003`
 
-cmd /c chamando powershell/certutil/curl em cadeia — loader.
+cmd /c chamando powershell/certutil/curl em cadeia: loader.
 
 ```text
 datasource("xdr")

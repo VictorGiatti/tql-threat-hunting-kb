@@ -1,4 +1,4 @@
-# Nuvem — Threat Hunting TQL
+# Nuvem · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -8,7 +8,7 @@
 
 **MITRE ATT&CK:** `T1078.004`
 
-Criação de usuário/chave/policy — possível criação de acesso persistente. Valide os campos de nuvem no editor.
+Criação de usuário/chave/policy: possível criação de acesso persistente. Valide os campos de nuvem no editor.
 
 ```text
 datasource("xdr") with (log_type="cloudtrail", product_code="scm")
@@ -24,7 +24,7 @@ datasource("xdr") with (log_type="cloudtrail", product_code="scm")
 
 **MITRE ATT&CK:** `T1562.008`
 
-StopLogging/DeleteTrail/DeleteFlowLogs — cegando a auditoria da nuvem.
+StopLogging/DeleteTrail/DeleteFlowLogs: cegando a auditoria da nuvem.
 
 ```text
 datasource("xdr") with (log_type="cloudtrail", product_code="scm")
@@ -54,7 +54,7 @@ datasource("xdr") with (log_type="cloudtrail", product_code="scm")
 
 **MITRE ATT&CK:** `T1530`
 
-PutBucketPolicy/PutBucketAcl/remoção de PublicAccessBlock — dados públicos.
+PutBucketPolicy/PutBucketAcl/remoção de PublicAccessBlock: dados públicos.
 
 ```text
 datasource("xdr") with (log_type="cloudtrail", product_code="scm")
@@ -69,12 +69,12 @@ datasource("xdr") with (log_type="cloudtrail", product_code="scm")
 
 **MITRE ATT&CK:** `T1078.004`
 
-Atividade atribuída ao root — deve ser rara e vigiada.
+Atividade atribuída ao root, deve ser rara e vigiada.
 
 ```text
 datasource("xdr") with (log_type="cloudtrail", product_code="scm")
 | where eventTime > ago(7d)
-| where tostring(userIdentity) has "root"
+| where tostring(userIdentity) contains "root"
 | project eventTime, eventName
 | take 100
 ```
@@ -83,7 +83,7 @@ datasource("xdr") with (log_type="cloudtrail", product_code="scm")
 
 ## CloudTrail: logins de console por hora
 
-ConsoleLogin ao longo do tempo — picos e horários incomuns.
+ConsoleLogin ao longo do tempo, picos e horários incomuns.
 
 ```text
 datasource("xdr") with (log_type="cloudtrail", product_code="scm")
@@ -98,7 +98,7 @@ datasource("xdr") with (log_type="cloudtrail", product_code="scm")
 
 ## CloudTrail: chamadas mais frequentes
 
-Baseline das APIs mais chamadas — anomalias saltam à vista.
+Baseline das APIs mais chamadas, anomalias saltam à vista.
 
 ```text
 datasource("xdr") with (log_type="cloudtrail", product_code="scm")
@@ -113,7 +113,7 @@ datasource("xdr") with (log_type="cloudtrail", product_code="scm")
 
 **MITRE ATT&CK:** `T1578`
 
-RunInstances/TerminateInstances/CreateSnapshot/CreateFunction — manipulação de recursos.
+RunInstances/TerminateInstances/CreateSnapshot/CreateFunction: manipulação de recursos.
 
 ```text
 datasource("xdr") with (log_type="cloudtrail", product_code="scm")

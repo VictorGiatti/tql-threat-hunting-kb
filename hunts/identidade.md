@@ -1,4 +1,4 @@
-# Identidade — Threat Hunting TQL
+# Identidade · Threat Hunting TQL
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
@@ -8,7 +8,7 @@
 
 **MITRE ATT&CK:** `T1078`
 
-Logins de identidade — cruze IP e motivo do status.
+Logins de identidade, cruze IP e motivo do status.
 
 ```text
 datasource("xdr") with (log_type="identitytel", product_code="aad")
@@ -25,7 +25,7 @@ datasource("xdr") with (log_type="identitytel", product_code="aad")
 
 **MITRE ATT&CK:** `T1110 / T1078`
 
-Agrupa sign-ins por conta e motivo do status — acha conta sob ataque.
+Agrupa sign-ins por conta e motivo do status, acha conta sob ataque.
 
 ```text
 datasource("xdr") with (log_type="identitytel", product_code="aad")
@@ -75,7 +75,7 @@ datasource("xdr") with (log_type="identitytel", product_code="aad")
 
 **MITRE ATT&CK:** `T1078`
 
-Quem mais autentica na janela — baseline e anomalias.
+Quem mais autentica na janela, baseline e anomalias.
 
 ```text
 datasource("xdr") with (log_type="identitytel", product_code="aad")
@@ -89,7 +89,7 @@ datasource("xdr") with (log_type="identitytel", product_code="aad")
 
 ## Sign-ins por hora (gráfico)
 
-Linha do tempo dos sign-ins — pra flagrar picos fora do horário.
+Linha do tempo dos sign-ins, pra flagrar picos fora do horário.
 
 ```text
 datasource("xdr") with (log_type="identitytel", product_code="aad")
@@ -118,9 +118,9 @@ datasource("xdr") with (log_type="identitytel", product_code="aad")
 
 ## IP servindo muitas contas (make_set)
 
-**MITRE ATT&CK:** `T1136.003`
+**MITRE ATT&CK:** `T1110.003`
 
-Lista as contas vistas por IP — útil pra confirmar spray/reuso.
+Lista as contas vistas por IP, útil pra confirmar spray/reuso.
 
 ```text
 datasource("xdr") with (log_type="identitytel", product_code="aad")
