@@ -1,0 +1,16 @@
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Arquivos temporários / locks de Office
+*.tmp
+.~lock.*#
+~$*
+
+# Node (caso alguém rode scripts locais)
+node_modules/
+npm-debug.log*
+
+# Renderizações locais
+*.pdf
