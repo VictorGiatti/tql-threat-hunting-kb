@@ -88,6 +88,8 @@ git clone https://github.com/VictorGiatti/tql-threat-hunting-kb.git
 
 Depois, abra `painel/tql-threat-hunting.html` no navegador (busca, filtro por tática, copiar-query) ou navegue os `.md` direto aqui pelo GitHub, que ele renderiza tudo. Pra somar um hunt novo, veja o [guia de contribuição](CONTRIBUTING.md).
 
+> **Heads up (antivírus/EDR):** a base tem várias strings de ferramentas ofensivas (mimikatz, kerberoast, DCSync etc.). É normal o antivírus/EDR do endpoint colocar a pasta em quarentena ao clonar ou baixar. Se os arquivos sumirem, restaure na quarentena do seu AV e adicione uma exceção para a pasta do repositório. Não é malware, é conteúdo de detecção.
+
 ## Aviso
 
 São **consultas de exemplo**. Nomes de campo variam por fonte e schema, valide no editor (o autocomplete sugere os campos certos de cada `log_type`). Ajuste as janelas de tempo conforme o volume do ambiente.

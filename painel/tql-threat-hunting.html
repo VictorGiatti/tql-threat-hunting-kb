@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Base de conhecimento de threat hunting em TQL (Trend Vision One): 149 hunts por tática MITRE ATT&CK, cola de consultas e painel interativo.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
@@ -79,7 +80,7 @@
   .btn.primary{background:var(--grad);border:none;color:#fff;box-shadow:0 4px 16px rgba(225,27,46,.28)}
   .btn.primary:hover{filter:brightness(1.06);box-shadow:0 6px 20px rgba(232,97,29,.36)}
   .chips{margin-top:12px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
-  .chip{cursor:pointer;user-select:none;font-size:12.5px;padding:6px 12px;border-radius:20px;
+  .chip{cursor:pointer;user-select:none;font-family:inherit;line-height:1.15;font-size:12.5px;padding:6px 12px;border-radius:20px;
     border:1px solid var(--bd);background:var(--panel);color:var(--muted);transition:.14s}
   .chip:hover{border-color:var(--bd2);color:var(--txt)}
   .chip.on{background:var(--grad-soft);border-color:transparent;color:#1a0f06;font-weight:700}
@@ -186,7 +187,7 @@
 <div class="toolbar">
   <div class="wrap">
     <div class="toprow">
-    <input id="search" type="text" placeholder="Buscar por técnica, comando, MITRE, campo… (ex.: powershell, lsass, T1003, fortigate, vendorParsed)">
+    <input id="search" type="text" aria-label="Buscar hunts" placeholder="Buscar por técnica, comando, MITRE, campo… (ex.: powershell, lsass, T1003, fortigate, vendorParsed)">
     <button class="btn primary" id="addBtn">+ Adicionar hunt</button>
     <button class="btn" id="backupBtn">Backup / Restaurar</button>
   </div>
@@ -317,9 +318,9 @@ function buildChips(){
   if(!cats.includes(active))active="Todas";
   chipsEl.innerHTML="";
   cats.forEach(c=>{
-    const b=document.createElement("div");
-    b.className="chip"+(c===active?" on":""); b.textContent=c;
-    b.onclick=()=>{active=c;[...chipsEl.children].forEach(x=>x.classList&&x.classList.toggle("on",x.textContent===active));render();};
+    const b=document.createElement("button");
+    b.type="button"; b.className="chip"+(c===active?" on":""); b.textContent=c; b.setAttribute("aria-pressed", c===active);
+    b.onclick=()=>{active=c;buildChips();render();};
     chipsEl.appendChild(b);
   });
   countEl=document.createElement("div"); countEl.className="count"; chipsEl.appendChild(countEl);
