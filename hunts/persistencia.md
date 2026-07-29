@@ -49,7 +49,7 @@ datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd
-| where processCmd has_any ("net user /add", "net localgroup administrators", "net group")
+| where processCmd matches regex "(?i)(net user .*/add|net localgroup administrators|net group )"
 | sort by eventTime desc
 ```
 

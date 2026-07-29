@@ -51,6 +51,7 @@ Linha do tempo da ingestão por fornecedor, mostra a agregação viva.
 datasource("xdr") with (log_type="thirdparty")
 | where eventTime > ago(1d)
 | summarize eventos = count() by hora = bin(eventTime, 1h), vendor
+| sort by hora asc
 | render linechart with (xtitle="Hora", ytitle="Eventos")
 ```
 

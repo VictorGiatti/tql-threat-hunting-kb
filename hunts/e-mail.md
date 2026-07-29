@@ -204,8 +204,8 @@ Agrupa por mailRuleId, vê quais políticas estão pegando o quê.
 datasource("xdr") with (log_type="messaging")
 | where eventTime > ago(7d)
 | where array_length(mailRuleId) > 0
-| mv-expand regra = mailRuleId
-| summarize total = count() by regra = tostring(regra)
+| mv-expand regraExpandida = mailRuleId
+| summarize total = count() by regraId = tostring(regraExpandida)
 | top 30 by total desc
 ```
 

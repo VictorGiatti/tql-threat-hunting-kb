@@ -14,7 +14,7 @@
 
 ## 0) A primeira query (para testar que está tudo ok)
 
-As peças da linguagem: `datasource(...)` escolhe a fonte · `where` filtra · `summarize count() by` agrega · `project` escolhe colunas · `sort by` ordena · `take` limita · tempo com `ago(1d)`, `ago(24h)`, `ago(7d)`.
+As peças da linguagem: `datasource(...)` escolhe a fonte · `where` filtra · `summarize count() by` agrega · `project` escolhe colunas · `sort by` ordena · `take` limita · tempo com `ago(1h)`, `ago(1d)`, `ago(7d)`.
 
 Uma query leve só pra confirmar que o backend responde:
 ```
@@ -80,6 +80,7 @@ datasource("xdr")
 **2.1, Distribuição de eventos do Microsoft Defender por categoria** (a query do seu print)
 ```
 datasource("xdr") with (log_type="thirdparty")
+| where eventTime > ago(1d)
 | where pname == "Microsoft Defender for Endpoint"
 | summarize total = count() by eventCategory
 | sort by total desc
@@ -96,6 +97,7 @@ datasource("xdr") with (log_type="thirdparty")
 **2.3, Amostra crua de um log de terceiro (10 linhas do MDE)**
 ```
 datasource("xdr") with (log_type="thirdparty")
+| where eventTime > ago(1d)
 | where pname == "Microsoft Defender for Endpoint"
 | take 10
 ```
@@ -103,7 +105,7 @@ datasource("xdr") with (log_type="thirdparty")
 **2.4, Nativo + terceiro lado a lado, por produto e host** (mostra o Data Lake único)
 ```
 datasource("xdr")
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | summarize eventos = count() by pname, endpointHostName
 | sort by eventos desc
 | take 50
@@ -166,6 +168,7 @@ datasource("xdr") with (log_type="detection")
 ```
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
+| where eventTime > ago(1d)
 | where processCmd contains "powershell" and processCmd contains "-enc"
 | summarize hits = count() by endpointHostName, parentCmd
 | sort by hits desc
@@ -175,6 +178,7 @@ datasource("xdr")
 ```
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
+| where eventTime > ago(1d)
 | where processCmd contains "certutil" or processCmd contains "mshta" or processCmd contains "rundll32"
 | project eventTime, endpointHostName, processCmd, parentCmd
 | sort by eventTime desc
@@ -185,6 +189,7 @@ datasource("xdr")
 ```
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
+| where eventTime > ago(1d)
 | where processCmd contains "lsass"
 | project eventTime, endpointHostName, processCmd, parentCmd
 | sort by eventTime desc
@@ -193,7 +198,8 @@ datasource("xdr")
 **4.4, Filtrar por técnica MITRE via tags** (ex.: T1055 – process injection)
 ```
 datasource("xdr") with (log_type="detection")
-| where tags has "MITRE.T1055"
+| where eventTime > ago(7d)
+| where tags has_any ("MITRE.T1055")
 | project eventTime, endpointHostName, eventName, ruleName, tags
 | sort by eventTime desc
 ```
@@ -202,7 +208,7 @@ datasource("xdr") with (log_type="detection")
 ```
 datasource("xdr")
 | where eventCategory == "DeviceNetworkEvents"
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | summarize conexoes = count() by endpointHostName
 | sort by conexoes desc
 | take 50
@@ -212,7 +218,7 @@ datasource("xdr")
 ```
 datasource("xdr")
 | where eventCategory == "DeviceLogonEvents"
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | summarize logons = count() by duser, endpointHostName
 | sort by logons desc
 | take 50
@@ -226,7 +232,7 @@ datasource("xdr")
 ```
 datasource("xdr")
 | where endpointHostName == "trendmicro-scout-5n2s5"
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | project eventTime, eventCategory, eventName, processCmd
 | sort by eventTime desc
 | take 100
@@ -235,6 +241,7 @@ datasource("xdr")
 **5.2, Tudo ligado a um usuário** (troque o e-mail na linha `where`)
 ```
 datasource("xdr") with (log_type="detection")
+| where eventTime > ago(7d)
 | where duser == "contato@seudominio.com"
 | project eventTime, pname, eventName, endpointHostName
 | sort by eventTime desc
@@ -243,6 +250,7 @@ datasource("xdr") with (log_type="detection")
 **5.3, Abrir um evento específico por ID** (troque o eventId na linha `where`)
 ```
 datasource("xdr") with (log_type="detection")
+| where eventTime > ago(7d)
 | where eventId == "100119"
 | project eventTime, pname, endpointHostName, eventName, eventSubName, ruleName
 | sort by eventTime desc
@@ -251,7 +259,7 @@ datasource("xdr") with (log_type="detection")
 **5.4, Processos executados por host (baseline rápido)**
 ```
 datasource("xdr")
-| where eventCategory == "DeviceProcessEvents" and eventTime > ago(24h)
+| where eventCategory == "DeviceProcessEvents" and eventTime > ago(1d)
 | summarize execucoes = count() by endpointHostName
 | sort by execucoes desc
 | take 20
@@ -264,7 +272,7 @@ datasource("xdr")
 - **"Request failed with status code 502" (ou 500/504):** é erro do **servidor/gateway**, não da sua query: geralmente temporário. Clique **Run query** de novo; se persistir, rode a query leve do bloco 0 (`take 10`, `ago(1h)`) pra ver se o backend voltou. Se continuar caindo, é a plataforma: siga a demo por slide e retome depois.
 - **Squiggle vermelho / erro de sintaxe:** corrija antes de rodar: query inválida não executa. Passe o mouse no erro pra ver a mensagem.
 - **Campo não existe:** apague o nome e deixe o **autocomplete** sugerir o campo certo daquela fonte. (Ex.: não existe `initiatingProcessFileName`, use `parentCmd`.)
-- **Campo em array (ex.: `tags`):** use `has`, não `contains`. Ex.: `tags has "MITRE.T1055"`. O `contains` só funciona em texto.
+- **Campo em array (ex.: `tags`):** use `has_any`, não `contains` nem `has`. Ex.: `tags has_any ("MITRE.T1055")`. `contains` e `has` são operadores de string e dão TQL014 em coluna array.
 - **Campos confirmados no seu ambiente (dos prints):** `eventTime`, `pname`, `productCode`, `endpointHostName`, `processCmd`, `parentCmd`, `tags` (array → `has`), `eventId`, `eventName`, `eventSubName`, `ruleType`, `ruleName`, `duser`, `eventCategory`, `severity`.
 - **Voltou vazio:** amplie o tempo (`ago(7d)` → `ago(30d)`), tire um `where`, ou troque `==` por `contains`.
 - **Regra de ouro do summarize:** depois de `summarize ... by X`, só existem `X` e a métrica agregada (ex.: `total`). Não dá pra `project` colunas que foram agregadas.
