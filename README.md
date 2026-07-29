@@ -30,7 +30,7 @@ A fonte dos dados é o **Data Lake do Vision One**, que reúne telemetria nativa
 - Sempre que souber, especifique `with (log_type="…", product_code="…")`: são filtros "de graça" e deixam a query muito mais rápida.
 - Comece com janela curta e use `project` cedo pra trazer só as colunas necessárias.
 - Ordene os filtros do barato pro caro: `==` e `in` antes de `contains` / `matches regex`.
-- Campo em array (ex.: `tags`): use `has` (ou `has_any`), nunca `contains`.
+- Campo em array (ex.: `tags`): use `has_any (…)`, nunca `contains` nem `has`.
 - Depois de `summarize ... by X`, só existem `X` e a métrica agregada: não dê `project` em coluna que o summarize removeu.
 - **Zero resultado também é resposta**: quer dizer que o padrão não apareceu naquela janela.
 
