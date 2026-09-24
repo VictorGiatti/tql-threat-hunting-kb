@@ -2,20 +2,23 @@
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
-> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
+> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado só vale como "nada encontrado" depois de confirmar que a fonte está reportando: veja o [checklist](../sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir).
 
 ## PowerShell codificado (-enc)
 
 **MITRE ATT&CK:** `T1059.001`
 
-Comando PowerShell ofuscado em base64, evasão clássica de defesa.
+Comando PowerShell com payload em base64 (`-e`, `-ec`, `-enc`, `-EncodedCommand`), evasão clássica de defesa.
+
+> **Limitação:** o TQL não decodifica base64 nem extrai substring (`base64_decode`/`extract` não existem). O hunt acha o blob; o conteúdo tem que ser lido fora (ex.: CyberChef).
 
 ```text
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd, parentCmd
-| where processCmd contains "powershell" and processCmd contains "-enc"
+| where processCmd contains "powershell" or processCmd contains "pwsh"
+| where processCmd matches regex "(?i) [-/]e[a-z]* +.?[a-z0-9+/=]{20,}"
 | sort by eventTime desc
 | take 100
 ```
@@ -33,7 +36,7 @@ datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd, parentCmd
-| where processCmd has_any ("DownloadString", "Invoke-WebRequest", "IEX", "Net.WebClient")
+| where processCmd matches regex "(?i)(downloadstring|downloadfile|invoke-webrequest|iwr |net[.]webclient|iex|invoke-expression)"
 | sort by eventTime desc
 | take 100
 ```
@@ -51,7 +54,7 @@ datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd, parentCmd
-| where processCmd has_any ("certutil", "mshta", "rundll32", "regsvr32", "installutil")
+| where processCmd matches regex "(?i)(certutil|mshta|rundll32|regsvr32|installutil)"
 | sort by eventTime desc
 | take 100
 ```
@@ -69,8 +72,9 @@ datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd, parentCmd
-| where processCmd has_any ("wmic ", "wmiprvse", "Invoke-WmiMethod")
+| where processCmd matches regex "(?i)(wmic([.]exe)? |wmiprvse|invoke-wmimethod|invoke-cimmethod)"
 | sort by eventTime desc
+| take 100
 ```
 
 ---
@@ -98,15 +102,15 @@ datasource("xdr")
 
 **MITRE ATT&CK:** `T1059`
 
-Scripts (.ps1/.vbs/.js/.hta/.bat) executados a partir de AppData: típico de dropper.
+Scripts (.ps1/.vbs/.js/.hta/.bat) executados de AppData, Temp, ProgramData ou Users\Public: típico de dropper.
 
 ```text
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd, parentCmd
-| where processCmd contains "AppData"
-| where processCmd has_any (".ps1", ".vbs", ".js", ".hta", ".bat")
+| where processCmd matches regex "(?i)(appdata|programdata|users.public|windows.temp|%temp%)"
+| where processCmd matches regex "(?i)[.](ps1|vbs|vbe|js|jse|hta|bat|cmd|wsf)([^a-z0-9]|$)"
 | sort by eventTime desc
 | take 100
 ```
@@ -124,8 +128,9 @@ datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd
-| where processCmd has_any ("wevtutil cl", "Clear-EventLog", "wevtutil clear-log")
+| where processCmd matches regex "(?i)(wevtutil([.]exe)? +(cl|clear-log) |clear-eventlog|remove-eventlog)"
 | sort by eventTime desc
+| take 100
 ```
 
 ---
@@ -142,7 +147,7 @@ datasource("xdr")
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd, parentCmd
 | where processCmd contains "mshta"
-| where processCmd has_any ("http", "javascript:", "vbscript:", ".hta")
+| where processCmd matches regex "(?i)(http|javascript:|vbscript:|[.]hta)"
 | sort by eventTime desc
 | take 100
 ```
@@ -161,7 +166,7 @@ datasource("xdr")
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd, parentCmd
 | where processCmd contains "rundll32"
-| where processCmd has_any ("javascript:", "url.dll", "RunHTMLApplication", "shell32.dll,Control_RunDLL")
+| where processCmd matches regex "(?i)(javascript:|url[.]dll|runhtmlapplication|shell32[.]dll,control_rundll)"
 | sort by eventTime desc
 | take 100
 ```
@@ -180,7 +185,7 @@ datasource("xdr")
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd, parentCmd
 | where processCmd contains "regsvr32"
-| where processCmd has_any ("/i:", "scrobj.dll", "http")
+| where processCmd matches regex "(?i)([-/]i:|scrobj[.]dll|http)"
 | sort by eventTime desc
 | take 100
 ```
@@ -199,7 +204,7 @@ datasource("xdr")
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd, parentCmd
 | where processCmd matches regex "(?i)(wscript|cscript)"
-| where processCmd has_any (".vbs", ".js", ".vbe", ".jse", ".wsf")
+| where processCmd matches regex "(?i)[.](vbs|vbe|js|jse|wsf)([^a-z0-9]|$)"
 | sort by eventTime desc
 | take 100
 ```
@@ -218,7 +223,7 @@ datasource("xdr")
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd, parentCmd
 | where processCmd contains "bitsadmin"
-| where processCmd has_any ("/transfer", "/create", "/addfile")
+| where processCmd matches regex "(?i)[-/](transfer|create|addfile)"
 | sort by eventTime desc
 | take 100
 ```

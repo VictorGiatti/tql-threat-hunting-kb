@@ -2,7 +2,7 @@
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
-> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
+> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado só vale como "nada encontrado" depois de confirmar que a fonte está reportando: veja o [checklist](../sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir).
 
 ## Sign-ins de identidade (Entra ID)
 
@@ -44,6 +44,8 @@ datasource("xdr") with (log_type="identitytel", product_code="aad")
 
 Um IP tentando muitas contas distintas = sinal de spray.
 
+> **Limitação:** conta todos os sign-ins do IP, não só as falhas. IP de saída corporativo (NAT/proxy) tende a dominar o topo: confira o `statusReason` antes de concluir.
+
 ```text
 datasource("xdr") with (log_type="identitytel", product_code="aad")
 | where eventTime > ago(1d)
@@ -59,6 +61,8 @@ datasource("xdr") with (log_type="identitytel", product_code="aad")
 **MITRE ATT&CK:** `T1078`
 
 Mesma conta autenticando de vários IPs distintos na janela.
+
+> **Limitação:** o TQL não tem geolocalização, então isto é contagem de IPs, não distância. VPN, proxy e rede móvel geram falso positivo.
 
 ```text
 datasource("xdr") with (log_type="identitytel", product_code="aad")

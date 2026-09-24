@@ -2,7 +2,7 @@
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
-> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
+> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado só vale como "nada encontrado" depois de confirmar que a fonte está reportando: veja o [checklist](../sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir).
 
 ## Compactação para exfil (archive)
 
@@ -88,7 +88,7 @@ datasource("xdr")
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd
 | where processCmd matches regex "(?i)(copy|move|xcopy|robocopy)"
-| where processCmd has_any ("Recycle", "Temp", "ProgramData")
+| where processCmd matches regex "(?i)(recycle|%temp%|appdata.local.temp|windows.temp|programdata|users.public)"
 | sort by eventTime desc
 | take 100
 ```

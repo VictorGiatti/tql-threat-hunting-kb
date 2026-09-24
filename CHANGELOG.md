@@ -1,5 +1,34 @@
 # Changelog
 
+## v2.1.0 · 2026-09-24
+
+Revisão de correção dos hunts, validação automática e painel gerado a partir do Markdown. De 149 para **154 hunts**.
+
+**Correções que mudam resultado (falsos negativos):**
+
+- **`has_any` trocado por `matches regex "(?i)…"` em 23 hunts de linha de comando.** `has`/`has_any` são case-sensitive, então variações de caixa escapavam: `iex`, `\\srv\C$`, `ADMIN$`, `schtasks /Create`, `NET USER`, `CertUtil`, `.VBS`, `README.txt`, etc.
+- **Criação de conta / grupo admin:** o termo literal `"net user /add"` nunca casava com o comando real (`net user <nome> <senha> /add`). Agora cobre `net`/`net1`, `localgroup`/`group` com admin ou `/add`, e os cmdlets `New-LocalUser` / `Add-LocalGroupMember` / `Add-ADGroupMember`.
+- **Cópia para share administrativo:** `C$`/`ADMIN$` em maiúsculas (a forma mais comum) não eram pegos.
+- **PowerShell codificado:** agora pega `-e`, `-ec`, `-enc`, `-EncodedCommand` (e `/e…`) seguidos do blob base64, e também `pwsh`. Antes só `-enc`.
+- **Precisão (menos ruído):** reverse shell não casa mais `concat`/`sync.exe`; dump de SAM exige `reg save|export HKLM\SAM|SYSTEM|SECURITY` (antes casava qualquer linha com "reg", "save" e "system"); Registry Run e Winlogon exigem a chave certa; Startup exige a pasta Startup de fato.
+- `take 100` nos 9 hunts de linhas cruas que não tinham limite; `sort by hora asc` antes do `render` nos gráficos que não ordenavam.
+- **Cola de consultas:** janela de tempo nas 8 queries que varriam tudo, limite nas que não tinham, hostname real trocado por `NOME-DO-HOST`, aviso de que `DeviceLogonEvents` não está confirmado em todos os tenants.
+
+**Novos hunts (5):** Beaconing · presença constante e baixo volume (Rede / C2), Brute force · falhas e bloqueios por host (Credenciais), Servidor web ou SQL gerando shell (webshell) (Persistência), Detecções por técnica MITRE (ranking) (Triagem), Coletores ativos (todas as fontes) (Visão geral). Montados a partir de padrões já verificados em produção; valide no seu tenant na primeira execução.
+
+**Limitações explícitas:** hunts que esbarram num limite do TQL ganharam a linha `> **Limitação:**` (decode de base64, `bin()` sem 5 min, spray sem filtro de falha, "viagem impossível" sem geolocalização, `userIdentity` do root), exibida também no painel.
+
+**Ferramentas:**
+
+- `scripts/tqlcheck.py`: validador estático de TQL (funções que não existem, `bin()`/`ago()` inválidos, `&&`/`||`, join anti, regex em coluna dynamic, sem janela, sem limite).
+- `scripts/kb.py`: `lint` (tqlcheck + regras da base, incluindo `has_any` em linha de comando), `test` (amostras de `tests/amostras.json` contra os filtros dos hunts), `build` (regera `hunts/README.md`, contadores do README e os dados do painel a partir dos `.md`) e `check` (CI).
+- `.github/workflows/validar.yml`: roda tudo em cada push e PR.
+- Índice de hunts agora linka direto na âncora de cada hunt.
+
+**Painel:** dados gerados pelo `build` (Markdown e painel não se desalinham mais), técnica MITRE vira link para attack.mitre.org, nota de limitação no card e checagem da query ao vivo no "+ Adicionar hunt".
+
+**Documentação:** `sintaxe-e-performance.md` ganhou "Limites da linguagem", o checklist "Voltou vazio? Confirme antes de concluir", o link para o dicionário de colunas (`tm-v1-schema`) e a lista de funções que funcionam mas não estão documentadas. A orientação "zero resultado também é resposta" virou "zero resultado só vale depois de confirmar a fonte".
+
 ## v2.0.0 · 2026-07-22
 
 Grande expansão: de 41 para **149 hunts** em **17 categorias**, cobrindo o ciclo MITRE de ponta a ponta.

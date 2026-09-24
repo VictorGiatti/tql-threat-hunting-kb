@@ -7,8 +7,9 @@
 > 2. **Nenhuma query aqui tem comentário**, é só copiar e rodar. (Comentário no meio da query pode confundir o editor.)
 > 3. **Nomes de campo variam por fonte/schema.** Se um campo der erro, apague e deixe o **autocomplete** sugerir o certo daquela fonte.
 > 4. Nas queries do bloco 5, **troque** o host / usuário / ID pelo do seu ambiente (indico na linha acima de cada uma).
+> 5. **Toda query tem janela de tempo** (`ago(...)`). Sem ela a busca varre tudo, demora e pode ser cortada sem aviso.
 >
-> **Dica de demo:** comece pelo bloco 1 ou 2 (quase sempre retornam dados). No hunting (bloco 4), **zero resultado também é resposta**: quer dizer que não achou o padrão.
+> **Dica:** comece pelo bloco 1 ou 2 (quase sempre retornam dados). No hunting (bloco 4), zero resultado só vale como "não achou o padrão" depois de confirmar que a fonte está reportando: veja o [checklist](sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir).
 
 ---
 
@@ -75,11 +76,12 @@ datasource("xdr")
 
 ---
 
-## 2) Agregação de logs de terceiros (o seu diferencial: o SIEM como agregador)
+## 2) Agregação de logs de terceiros (o Data Lake como agregador)
 
-**2.1, Distribuição de eventos do Microsoft Defender por categoria** (a query do seu print)
+**2.1, Distribuição de eventos do Microsoft Defender por categoria**
 ```
 datasource("xdr") with (log_type="thirdparty")
+| where eventTime > ago(1d)
 | where pname == "Microsoft Defender for Endpoint"
 | summarize total = count() by eventCategory
 | sort by total desc
@@ -96,6 +98,7 @@ datasource("xdr") with (log_type="thirdparty")
 **2.3, Amostra crua de um log de terceiro (10 linhas do MDE)**
 ```
 datasource("xdr") with (log_type="thirdparty")
+| where eventTime > ago(1h)
 | where pname == "Microsoft Defender for Endpoint"
 | take 10
 ```
@@ -113,7 +116,7 @@ datasource("xdr")
 
 ## 3) Detecções e severidade
 
-**3.1, Top 100 detecções de alta severidade (>= 8) do Apex One nas últimas 24h** (a query do guia)
+**3.1, Top 100 detecções de alta severidade (>= 8) do Apex One nas últimas 24h**
 ```
 datasource("xdr") with (log_type="detection", product_code="sao")
 | where eventTime > ago(1d)
@@ -160,13 +163,15 @@ datasource("xdr") with (log_type="detection")
 
 ---
 
-## 4) Threat hunting (podem retornar zero · e tá tudo bem)
+## 4) Threat hunting (zero resultado é normal, mas confirme a fonte)
 
-**4.1, PowerShell codificado (-enc): ofuscação clássica** (a query do slide 30)
+**4.1, PowerShell codificado (-e, -enc, -EncodedCommand): ofuscação clássica**
 ```
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
-| where processCmd contains "powershell" and processCmd contains "-enc"
+| where eventTime > ago(7d)
+| where processCmd contains "powershell" or processCmd contains "pwsh"
+| where processCmd matches regex "(?i) [-/]e[a-z]* +.?[a-z0-9+/=]{20,}"
 | summarize hits = count() by endpointHostName, parentCmd
 | sort by hits desc
 ```
@@ -175,6 +180,7 @@ datasource("xdr")
 ```
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
+| where eventTime > ago(7d)
 | where processCmd contains "certutil" or processCmd contains "mshta" or processCmd contains "rundll32"
 | project eventTime, endpointHostName, processCmd, parentCmd
 | sort by eventTime desc
@@ -185,17 +191,21 @@ datasource("xdr")
 ```
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
+| where eventTime > ago(7d)
 | where processCmd contains "lsass"
 | project eventTime, endpointHostName, processCmd, parentCmd
 | sort by eventTime desc
+| take 100
 ```
 
 **4.4, Filtrar por técnica MITRE via tags** (ex.: T1055 – process injection)
 ```
 datasource("xdr") with (log_type="detection")
+| where eventTime > ago(7d)
 | where tags has "MITRE.T1055"
 | project eventTime, endpointHostName, eventName, ruleName, tags
 | sort by eventTime desc
+| take 100
 ```
 
 **4.5, Conexões de rede por host (últimas 24h)**
@@ -208,7 +218,7 @@ datasource("xdr")
 | take 50
 ```
 
-**4.6, Volume de logon por conta e host (picos suspeitos)**
+**4.6, Volume de logon por conta e host (picos suspeitos)** (o valor `DeviceLogonEvents` não foi confirmado em todos os tenants: se vier vazio, rode a 1.3 e veja quais categorias existem antes de concluir)
 ```
 datasource("xdr")
 | where eventCategory == "DeviceLogonEvents"
@@ -222,11 +232,11 @@ datasource("xdr")
 
 ## 5) Investigação: "quem?" e "onde?"
 
-**5.1, Timeline de um host** (troque o nome do host na linha `where`)
+**5.1, Timeline de um host** (troque `NOME-DO-HOST` na linha `where`)
 ```
 datasource("xdr")
-| where endpointHostName == "trendmicro-scout-5n2s5"
 | where eventTime > ago(24h)
+| where endpointHostName == "NOME-DO-HOST"
 | project eventTime, eventCategory, eventName, processCmd
 | sort by eventTime desc
 | take 100
@@ -235,17 +245,21 @@ datasource("xdr")
 **5.2, Tudo ligado a um usuário** (troque o e-mail na linha `where`)
 ```
 datasource("xdr") with (log_type="detection")
+| where eventTime > ago(7d)
 | where duser == "contato@seudominio.com"
 | project eventTime, pname, eventName, endpointHostName
 | sort by eventTime desc
+| take 100
 ```
 
 **5.3, Abrir um evento específico por ID** (troque o eventId na linha `where`)
 ```
 datasource("xdr") with (log_type="detection")
+| where eventTime > ago(30d)
 | where eventId == "100119"
 | project eventTime, pname, endpointHostName, eventName, eventSubName, ruleName
 | sort by eventTime desc
+| take 100
 ```
 
 **5.4, Processos executados por host (baseline rápido)**
@@ -261,11 +275,11 @@ datasource("xdr")
 
 ## 6) Plano B (se algo der errado na hora)
 
-- **"Request failed with status code 502" (ou 500/504):** é erro do **servidor/gateway**, não da sua query: geralmente temporário. Clique **Run query** de novo; se persistir, rode a query leve do bloco 0 (`take 10`, `ago(1h)`) pra ver se o backend voltou. Se continuar caindo, é a plataforma: siga a demo por slide e retome depois.
+- **"Request failed with status code 502" (ou 500/504):** é erro do **servidor/gateway**, não da sua query: geralmente temporário. Clique **Run query** de novo; se persistir, rode a query leve do bloco 0 (`take 10`, `ago(1h)`) pra ver se o backend voltou. Se continuar caindo, é a plataforma: retome depois.
 - **Squiggle vermelho / erro de sintaxe:** corrija antes de rodar: query inválida não executa. Passe o mouse no erro pra ver a mensagem.
-- **Campo não existe:** apague o nome e deixe o **autocomplete** sugerir o campo certo daquela fonte. (Ex.: não existe `initiatingProcessFileName`, use `parentCmd`.)
+- **Campo não existe:** apague o nome e deixe o **autocomplete** sugerir o campo certo daquela fonte. (Ex.: não existe `initiatingProcessFileName`, use `parentCmd`.) Coluna inexistente costuma voltar **vazio, sem erro**.
 - **Campo em array (ex.: `tags`):** use `has`, não `contains`. Ex.: `tags has "MITRE.T1055"`. O `contains` só funciona em texto.
-- **Campos confirmados no seu ambiente (dos prints):** `eventTime`, `pname`, `productCode`, `endpointHostName`, `processCmd`, `parentCmd`, `tags` (array → `has`), `eventId`, `eventName`, `eventSubName`, `ruleType`, `ruleName`, `duser`, `eventCategory`, `severity`.
-- **Voltou vazio:** amplie o tempo (`ago(7d)` → `ago(30d)`), tire um `where`, ou troque `==` por `contains`.
+- **Campos confirmados no ambiente:** `eventTime`, `pname`, `productCode`, `endpointHostName`, `processCmd`, `parentCmd`, `tags` (array → `has`), `eventId`, `eventName`, `eventSubName`, `ruleType`, `ruleName`, `duser`, `eventCategory`, `severity`.
+- **Voltou vazio:** siga o [checklist](sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir) antes de dizer "nada encontrado".
 - **Regra de ouro do summarize:** depois de `summarize ... by X`, só existem `X` e a métrica agregada (ex.: `total`). Não dá pra `project` colunas que foram agregadas.
-- **Query "à prova de falha" pra salvar a demo:** a 1.2 ou a 2.1, retornam dados e ficam boas na tabela/gráfico. Troque a visualização pra gráfico de barras nos `summarize ... by ...`.
+- **Query "à prova de falha":** a 1.2 ou a 2.1 retornam dados e ficam boas na tabela/gráfico. Troque a visualização pra gráfico de barras nos `summarize ... by ...`.

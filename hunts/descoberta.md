@@ -2,7 +2,7 @@
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
-> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
+> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado só vale como "nada encontrado" depois de confirmar que a fonte está reportando: veja o [checklist](../sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir).
 
 ## Reconhecimento (discovery)
 
@@ -15,8 +15,9 @@ datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
 | where eventTime > ago(24h)
 | project eventTime, endpointHostName, processCmd
-| where processCmd has_any ("whoami", "net view", "ipconfig /all", "nltest", "systeminfo")
+| where processCmd matches regex "(?i)(whoami|net1?([.]exe)? +view|ipconfig([.]exe)? +/all|nltest|systeminfo)"
 | sort by eventTime desc
+| take 100
 ```
 
 ---

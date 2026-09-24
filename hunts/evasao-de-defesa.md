@@ -2,7 +2,7 @@
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
-> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
+> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado só vale como "nada encontrado" depois de confirmar que a fonte está reportando: veja o [checklist](../sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir).
 
 ## Desabilitar Defender (realtime)
 
@@ -124,7 +124,7 @@ datasource("xdr")
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd
 | where processCmd contains "attrib"
-| where processCmd has_any ("+h", "+s")
+| where processCmd matches regex "(?i)[+][hs]"
 | sort by eventTime desc
 | take 100
 ```
@@ -197,7 +197,7 @@ datasource("xdr")
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd
 | where processCmd contains "reg add"
-| where processCmd has_any ("DisableAntiSpyware", "DisableRealtimeMonitoring", "TamperProtection")
+| where processCmd matches regex "(?i)(disableantispyware|disablerealtimemonitoring|disablebehaviormonitoring|disableioavprotection|tamperprotection)"
 | sort by eventTime desc
 | take 100
 ```
