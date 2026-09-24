@@ -1,5 +1,7 @@
 # Base de Conhecimento · Threat Hunting com TQL
 
+[![validar](https://github.com/VictorGiatti/tql-threat-hunting-kb/actions/workflows/validar.yml/badge.svg)](https://github.com/VictorGiatti/tql-threat-hunting-kb/actions/workflows/validar.yml)
+
 Consultas de caça a ameaças (threat hunting) para o **Trend Vision One → XDR Data Explorer**, escritas em **TQL (Trend Query Language)** e organizadas por tática **MITRE ATT&CK**.
 
 **154 hunts · 17 categorias · cola de consultas · painel interativo**
@@ -116,4 +118,4 @@ São **consultas de exemplo**. Nomes de campo variam por fonte e schema, valide 
 
 ---
 
-*TQL Threat Hunting KB · v2.1.0 · Trend Vision One*
+*TQL Threat Hunting KB · v2.1.1 · Trend Vision One*
