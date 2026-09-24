@@ -90,6 +90,10 @@ git push -u origin hunt/nome-curto
 # abra um Pull Request para revisão (o template já traz o checklist)
 ```
 
+### Versão nova
+
+A versão sai do [`CHANGELOG.md`](CHANGELOG.md). Pra lançar, adicione no topo uma seção `## vX.Y.Z · AAAA-MM-DD` com as notas e rode `python scripts/kb.py build` (atualiza o rodapé do README). Quando o PR entra na `main`, o workflow `release` cria a tag anotada e a Release no GitHub com essas notas.
+
 ### Mensagens de commit
 
 Prefixo curto, em português, dizendo o que muda:

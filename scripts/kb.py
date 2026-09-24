@@ -11,6 +11,8 @@ Uso (a partir da raiz do repositório):
     python scripts/kb.py test    roda tests/amostras.json contra os filtros dos hunts
     python scripts/kb.py build   regera hunts/README.md, contadores do README e dados do painel
     python scripts/kb.py check   igual ao build, mas só verifica (falha se algo estiver desatualizado)
+    python scripts/kb.py versao  imprime a versão mais recente do CHANGELOG.md (ex.: v2.1.1)
+    python scripts/kb.py notas vX.Y.Z   imprime as notas daquela versão (usado pelo workflow de release)
 
 Código de saída: 0 ok, 1 falha, 2 uso incorreto. Só usa a biblioteca padrão.
 """
@@ -340,7 +342,40 @@ def render_readme(text, cats):
     n = sum(len(h) for _, _, h in cats)
     text = re.sub(r"\*\*\d+ hunts · \d+ categorias", f"**{n} hunts · {len(cats)} categorias", text)
     text = re.sub(r"Os \d+ hunts organizados", f"Os {n} hunts organizados", text)
+    versao = changelog()[0][0]
+    text = re.sub(r"(\*TQL Threat Hunting KB · )v\d+\.\d+\.\d+", rf"\g<1>{versao}", text)
     return text
+
+
+# ---------------------------------------------------------------------------
+# versões: o CHANGELOG.md é a fonte da verdade (rodapé do README e releases)
+# ---------------------------------------------------------------------------
+
+def changelog():
+    """[(versão, título, notas)] na ordem do arquivo, a mais recente primeiro."""
+    text = read("CHANGELOG.md")
+    heads = list(re.finditer(r"^## (v\d+\.\d+\.\d+)\b(.*)$", text, re.M))
+    if not heads:
+        raise SystemExit("CHANGELOG.md: nenhuma seção '## vX.Y.Z · data' encontrada")
+    out = []
+    for i, m in enumerate(heads):
+        end = heads[i + 1].start() if i + 1 < len(heads) else len(text)
+        out.append((m.group(1), (m.group(1) + m.group(2)).strip(), text[m.end():end].strip()))
+    return out
+
+
+def cmd_versao():
+    print(changelog()[0][0])
+    return 0
+
+
+def cmd_notas(versao):
+    for v, _, notas in changelog():
+        if v == versao:
+            print(notas)
+            return 0
+    print(f"{versao} não está no CHANGELOG.md", file=sys.stderr)
+    return 1
 
 
 def targets(cats):
@@ -373,8 +408,10 @@ def cmd_build(check_only):
 
 
 def main():
-    cmds = {"lint": cmd_lint, "test": cmd_test,
+    cmds = {"lint": cmd_lint, "test": cmd_test, "versao": cmd_versao,
             "build": lambda: cmd_build(False), "check": lambda: cmd_build(True)}
+    if len(sys.argv) == 3 and sys.argv[1] == "notas":
+        return cmd_notas(sys.argv[2])
     if len(sys.argv) != 2 or sys.argv[1] not in cmds:
         print(__doc__)
         return 2

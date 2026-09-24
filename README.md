@@ -87,10 +87,11 @@ tql-threat-hunting-kb/
 │   └── amostras.json             # linhas de comando que cada hunt deve / não deve pegar
 ├── .github/
 │   ├── workflows/validar.yml     # CI: lint + amostras + sincronia do painel
+│   ├── workflows/release.yml     # versão nova no CHANGELOG → tag + Release
 │   ├── ISSUE_TEMPLATE/           # formulários: hunt novo e hunt com problema
 │   └── pull_request_template.md  # checklist de PR
 ├── CONTRIBUTING.md               # como adicionar hunts
-└── CHANGELOG.md                  # histórico de versões
+└── CHANGELOG.md                  # histórico de versões (fonte da versão e das Releases)
 ```
 
 ## Validação

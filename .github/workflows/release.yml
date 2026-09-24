@@ -1,0 +1,68 @@
+name: release
+
+# Versão nova no CHANGELOG.md chegando na main vira tag anotada + Release no GitHub.
+# Para marcar uma versão antiga: Actions → release → Run workflow, com versão e commit.
+
+on:
+  push:
+    branches: [main]
+    paths: [CHANGELOG.md]
+  workflow_dispatch:
+    inputs:
+      versao:
+        description: "Versão do CHANGELOG.md (ex.: v2.0.0). Vazio = a mais recente."
+        required: false
+        default: ""
+      commit:
+        description: "Commit onde marcar a versão. Vazio = ponta da main."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tag anotada e Release a partir do CHANGELOG
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSAO: ${{ inputs.versao }}
+          COMMIT: ${{ inputs.commit }}
+        run: |
+          set -euo pipefail
+          ultima="$(python scripts/kb.py versao)"
+          versao="${VERSAO:-$ultima}"
+          alvo="$(git rev-parse --verify "${COMMIT:-$GITHUB_SHA}^{commit}")"
+
+          if gh release view "$versao" >/dev/null 2>&1; then
+            echo "::notice::$versao já tem Release, nada a fazer"
+            exit 0
+          fi
+
+          python scripts/kb.py notas "$versao" > "$RUNNER_TEMP/notas.md"
+          titulo="$(grep -m1 -F "## $versao " CHANGELOG.md | sed 's/^## //')"
+
+          if ! git rev-parse -q --verify "refs/tags/$versao" >/dev/null; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$versao" "$alvo" -m "$titulo"
+            git push origin "refs/tags/$versao"
+          fi
+
+          latest=false
+          if [ "$versao" = "$ultima" ]; then latest=true; fi
+          gh release create "$versao" --verify-tag --title "$titulo" \
+            --notes-file "$RUNNER_TEMP/notas.md" --latest="$latest"
+          echo "::notice::Release $versao publicada em $(git rev-parse --short "$versao^{commit}")"

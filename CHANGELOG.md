@@ -8,6 +8,7 @@ Integra o branch `fix/revisao-doc-oficial` (29/07), que tinha ficado fora da `ma
 - **E-mail · Regras de e-mail que mais dispararam:** o alias do `mv-expand` não colide mais com o do `summarize` (`regraExpandida` / `regraId`).
 - **`tags`:** `has_any ("MITRE.T1055")` no lugar de `has "MITRE.T1055"` (Triagem, cola 4.4, README). Funciona com um valor ou vários.
 - `ago(24h)` padronizado para `ago(1d)`; `summarize count() by` da cola ganhou alias.
+- **Releases automáticas:** versão nova no `CHANGELOG.md` chegando na `main` vira tag anotada + Release no GitHub (`.github/workflows/release.yml`); versões antigas podem ser marcadas pelo Run workflow. `kb.py versao` / `kb.py notas` leem o CHANGELOG, e o `build` mantém o rodapé do README na versão certa.
 - **Repositório:** CI roda uma vez por PR (antes rodava no push e no PR), com `workflow_dispatch` e permissão só de leitura; selos no README; template de PR e formulários de issue (**Hunt novo**, **Hunt com problema**); convenção de mensagens de commit no `CONTRIBUTING.md`; `.editorconfig`; `.mailmap` unifica os nomes do mesmo autor; `__pycache__/` no `.gitignore`.
 
 ## v2.1.0 · 2026-09-24
