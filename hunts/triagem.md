@@ -43,7 +43,7 @@ Filtra detecções por técnica MITRE. Troque o T-code.
 ```text
 datasource("xdr") with (log_type="detection")
 | where eventTime > ago(7d)
-| where tags has "MITRE.T1055"
+| where tags has_any ("MITRE.T1055")
 | project eventTime, endpointHostName, eventName, ruleName, tags
 | sort by eventTime desc
 | take 100

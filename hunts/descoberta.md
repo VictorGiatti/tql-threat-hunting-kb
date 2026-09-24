@@ -13,7 +13,7 @@ whoami, net view, ipconfig, nltest, systeminfo em sequência.
 ```text
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | project eventTime, endpointHostName, processCmd
 | where processCmd matches regex "(?i)(whoami|net1?([.]exe)? +view|ipconfig([.]exe)? +/all|nltest|systeminfo)"
 | sort by eventTime desc
@@ -49,7 +49,7 @@ net view/share/use, sessions, arp: mapeando o que dá pra alcançar.
 ```text
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | project eventTime, endpointHostName, processCmd
 | where processCmd matches regex "(?i)(net view|net share|net use|net sessions|arp -a)"
 | sort by eventTime desc
@@ -67,7 +67,7 @@ tasklist, sc query, Get-Process/Get-Service: mapeando o que roda.
 ```text
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | project eventTime, endpointHostName, processCmd
 | where processCmd matches regex "(?i)(tasklist|sc query|get-process|get-service|wmic process)"
 | sort by eventTime desc
@@ -139,7 +139,7 @@ Ping sweep, nmap, Test-Connection: mapeando hosts na rede.
 ```text
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | project eventTime, endpointHostName, processCmd
 | where processCmd matches regex "(?i)(for.*ping|nmap|test-connection|net view /domain)"
 | sort by eventTime desc
@@ -157,7 +157,7 @@ dir /s, tree, Get-ChildItem -Recurse: varredura do disco.
 ```text
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | project eventTime, endpointHostName, processCmd
 | where processCmd matches regex "(?i)(dir /s|tree |get-childitem -recurse|where /r)"
 | sort by eventTime desc
@@ -175,7 +175,7 @@ schtasks /query, Get-ScheduledTask: inventário de agendamentos.
 ```text
 datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | project eventTime, endpointHostName, processCmd
 | where processCmd matches regex "(?i)(schtasks.*/query|get-scheduledtask)"
 | sort by eventTime desc
