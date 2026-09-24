@@ -2,7 +2,7 @@
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
-> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
+> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado só vale como "nada encontrado" depois de confirmar que a fonte está reportando: veja o [checklist](../sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir).
 
 ## CloudTrail: ações sensíveis de IAM
 
@@ -70,6 +70,8 @@ datasource("xdr") with (log_type="cloudtrail", product_code="scm")
 **MITRE ATT&CK:** `T1078.004`
 
 Atividade atribuída ao root, deve ser rara e vigiada.
+
+> **Limitação:** `userIdentity` é um objeto; `contains "root"` também casa ARNs e roles com "root" no nome. Confira o tipo de identidade no resultado.
 
 ```text
 datasource("xdr") with (log_type="cloudtrail", product_code="scm")

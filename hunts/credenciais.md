@@ -2,7 +2,7 @@
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
-> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
+> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado só vale como "nada encontrado" depois de confirmar que a fonte está reportando: veja o [checklist](../sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir).
 
 ## Acesso ao LSASS (dump de credencial)
 
@@ -17,6 +17,7 @@ datasource("xdr")
 | project eventTime, endpointHostName, processCmd, parentCmd
 | where processCmd contains "lsass"
 | sort by eventTime desc
+| take 100
 ```
 
 ---
@@ -68,6 +69,7 @@ datasource("xdr") with (log_type="telemetry", product_code=["sao", "xes"])
 | where eventTime > ago(1d)
 | where winEventId in (4625, 4771, 4776, 4740)
 | summarize tentativas = count() by hora = bin(eventTime, 1h), winEventId
+| sort by hora asc
 | render linechart with (xtitle="Hora", ytitle="Tentativas")
 ```
 
@@ -84,7 +86,7 @@ datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd
-| where processCmd matches regex "(?i)reg.*save.*(sam|system|security)"
+| where processCmd matches regex "(?i)reg([.]exe)? +(save|export) +.?(hklm|hkey_local_machine).(sam|system|security)"
 | sort by eventTime desc
 | take 100
 ```
@@ -175,8 +177,23 @@ datasource("xdr")
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd
 | where processCmd contains "reg add"
-| where processCmd has_any ("UseLogonCredential", "WDigest")
+| where processCmd matches regex "(?i)(uselogoncredential|wdigest)"
 | sort by eventTime desc
 | take 100
 ```
 
+---
+
+## Brute force · falhas e bloqueios por host
+
+**MITRE ATT&CK:** `T1110`
+
+Falhas de logon (4625) e bloqueios de conta (4740) lado a lado por host: os dois altos no mesmo host = alvo de força bruta.
+
+```text
+datasource("xdr") with (log_type="telemetry")
+| where eventTime > ago(1d)
+| where winEventId in (4625, 4740)
+| summarize falhas = countif(winEventId == 4625), bloqueios = countif(winEventId == 4740) by endpointHostName
+| top 50 by falhas desc
+```

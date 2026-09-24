@@ -2,7 +2,7 @@
 
 Consultas de caça a ameaças (threat hunting) para o **Trend Vision One → XDR Data Explorer**, escritas em **TQL (Trend Query Language)** e organizadas por tática **MITRE ATT&CK**.
 
-**149 hunts · 17 categorias · cola de consultas · painel interativo**
+**154 hunts · 17 categorias · cola de consultas · painel interativo**
 
 ![Painel interativo de threat hunting em TQL](painel/preview.png)
 
@@ -31,8 +31,10 @@ A fonte dos dados é o **Data Lake do Vision One**, que reúne telemetria nativa
 - Comece com janela curta e use `project` cedo pra trazer só as colunas necessárias.
 - Ordene os filtros do barato pro caro: `==` e `in` antes de `contains` / `matches regex`.
 - Campo em array (ex.: `tags`): use `has` (ou `has_any`), nunca `contains`.
+- Linha de comando (`processCmd`, `parentCmd`): use `matches regex "(?i)(…)"`. `has`/`has_any` são case-sensitive e perdem `iex`, `C$`, `/Create`.
 - Depois de `summarize ... by X`, só existem `X` e a métrica agregada: não dê `project` em coluna que o summarize removeu.
-- **Zero resultado também é resposta**: quer dizer que o padrão não apareceu naquela janela.
+- **Zero resultado só é resposta depois de confirmado**: coluna inexistente, `log_type` errado ou regex em coluna `dynamic` também voltam vazio, sem erro. Siga o [checklist](sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir) antes de reportar "nada encontrado".
+- Hunt com `Limitação:` diz o que a query não cobre (CIDR, decode de base64, janela de 5 min…). Leia antes de concluir.
 
 Mais detalhes em [`sintaxe-e-performance.md`](sintaxe-e-performance.md).
 
@@ -40,9 +42,9 @@ Mais detalhes em [`sintaxe-e-performance.md`](sintaxe-e-performance.md).
 
 | Seção | Descrição |
 |---|---|
-| [Hunts (por categoria)](hunts/README.md) | Os 149 hunts organizados por tática, com técnica MITRE e query. |
+| [Hunts (por categoria)](hunts/README.md) | Os 154 hunts organizados por tática, com técnica MITRE e query. |
 | [Consultas de exemplo](consultas-de-exemplo.md) | Cola de bolso: ~25 queries prontas (aquecimento, agregação de terceiros, detecções, investigação, plano B). |
-| [Sintaxe & performance](sintaxe-e-performance.md) | Regras da linguagem, campos confirmados no ambiente e troubleshooting. |
+| [Sintaxe & performance](sintaxe-e-performance.md) | Regras da linguagem, campos confirmados, limites do TQL, checklist de "voltou vazio" e troubleshooting. |
 | [Painel interativo](painel/tql-threat-hunting.html) | Versão HTML navegável (busca, filtro, copiar, adicionar hunt). |
 | [Como contribuir](CONTRIBUTING.md) | Padrão pra adicionar um hunt novo. |
 
@@ -52,7 +54,7 @@ Mais detalhes em [`sintaxe-e-performance.md`](sintaxe-e-performance.md).
 tql-threat-hunting-kb/
 ├── README.md                     # este arquivo (índice da base)
 ├── hunts/
-│   ├── README.md                       # índice dos hunts (tabela por categoria + lista completa)
+│   ├── README.md                       # índice dos hunts (gerado pelo scripts/kb.py build)
 │   ├── execucao.md                     # Execução
 │   ├── evasao-de-defesa.md             # Evasão de defesa
 │   ├── credenciais.md                  # Credenciais
@@ -73,10 +75,28 @@ tql-threat-hunting-kb/
 ├── consultas-de-exemplo.md       # cola de bolso de queries
 ├── sintaxe-e-performance.md      # referência da linguagem + troubleshooting
 ├── painel/
-│   └── tql-threat-hunting.html   # painel interativo (abre no navegador)
+│   └── tql-threat-hunting.html   # painel interativo (dados gerados a partir dos .md)
+├── scripts/
+│   ├── kb.py                     # lint, test, build e check da base
+│   └── tqlcheck.py               # validador estático de TQL (roda sozinho numa query)
+├── tests/
+│   └── amostras.json             # linhas de comando que cada hunt deve / não deve pegar
+├── .github/workflows/validar.yml # CI: lint + amostras + sincronia do painel
 ├── CONTRIBUTING.md               # como adicionar hunts
 └── CHANGELOG.md                  # histórico de versões
 ```
+
+## Validação
+
+Toda query passa por um validador antes de entrar na base, e o CI roda o mesmo em cada push e Pull Request:
+
+```bash
+python scripts/kb.py lint    # funções que não existem no TQL, bin()/ago() inválidos, sem janela, sem take, has_any em linha de comando
+python scripts/kb.py test    # amostras de linha de comando contra os filtros dos hunts
+python scripts/kb.py build   # regera índice, contadores e os dados do painel a partir dos .md
+```
+
+Os `.md` de `hunts/` são a fonte da verdade: o painel e o índice saem deles, então nunca ficam dessincronizados.
 
 ## Clonar e usar
 
@@ -96,4 +116,4 @@ São **consultas de exemplo**. Nomes de campo variam por fonte e schema, valide 
 
 ---
 
-*TQL Threat Hunting KB · v2.0.0 · Trend Vision One*
+*TQL Threat Hunting KB · v2.1.0 · Trend Vision One*

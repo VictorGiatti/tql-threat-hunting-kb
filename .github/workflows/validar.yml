@@ -1,0 +1,22 @@
+name: validar
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  hunts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Autoteste do validador TQL
+        run: python scripts/tqlcheck.py --self-test
+      - name: Lint das queries
+        run: python scripts/kb.py lint
+      - name: Amostras de linha de comando
+        run: python scripts/kb.py test
+      - name: Índice, README e painel em sincronia
+        run: python scripts/kb.py check

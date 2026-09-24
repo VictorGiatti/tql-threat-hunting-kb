@@ -2,7 +2,7 @@
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
-> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
+> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado só vale como "nada encontrado" depois de confirmar que a fonte está reportando: veja o [checklist](../sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir).
 
 ## Detecções de alta severidade
 
@@ -46,6 +46,7 @@ datasource("xdr") with (log_type="detection")
 | where tags has "MITRE.T1055"
 | project eventTime, endpointHostName, eventName, ruleName, tags
 | sort by eventTime desc
+| take 100
 ```
 
 ---
@@ -114,3 +115,20 @@ datasource("xdr") with (log_type="detection")
 | top 25 by total desc
 ```
 
+---
+
+## Detecções por técnica MITRE (ranking)
+
+**MITRE ATT&CK:** `pivot`
+
+Abre o array `tags` e conta detecções e hosts por técnica MITRE: mostra quais técnicas mais aparecem no ambiente.
+
+```text
+datasource("xdr") with (log_type="detection")
+| where eventTime > ago(7d)
+| mv-expand tag = tags
+| extend tecnica = tostring(tag)
+| where tecnica startswith "MITRE."
+| summarize deteccoes = count(), hosts = dcount(endpointHostName) by tecnica
+| top 30 by deteccoes desc
+```

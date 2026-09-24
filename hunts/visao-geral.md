@@ -2,7 +2,7 @@
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
-> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
+> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado só vale como "nada encontrado" depois de confirmar que a fonte está reportando: veja o [checklist](../sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir).
 
 ## Inventário de fontes de dados
 
@@ -51,6 +51,7 @@ Linha do tempo da ingestão por fornecedor, mostra a agregação viva.
 datasource("xdr") with (log_type="thirdparty")
 | where eventTime > ago(1d)
 | summarize eventos = count() by hora = bin(eventTime, 1h), vendor
+| sort by hora asc
 | render linechart with (xtitle="Hora", ytitle="Eventos")
 ```
 
@@ -109,3 +110,15 @@ datasource("xdr") with (log_type="thirdparty")
 | top 10 by Total desc
 ```
 
+---
+
+## Coletores ativos (todas as fontes)
+
+Volume por `collectorName` em todas as fontes: o jeito mais rápido de ver quais coletores estão vivos.
+
+```text
+datasource("xdr")
+| where eventTime > ago(1d)
+| summarize eventos = count() by collectorName
+| top 30 by eventos desc
+```

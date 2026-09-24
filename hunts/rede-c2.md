@@ -2,13 +2,15 @@
 
 [← Índice de hunts](README.md) · [Início da base](../README.md)
 
-> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado também é resposta (não achou o padrão).
+> Ative o toggle **"Use Trend Query Language"** no XDR Data Explorer antes de rodar. Zero resultado só vale como "nada encontrado" depois de confirmar que a fonte está reportando: veja o [checklist](../sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir).
 
 ## Beaconing · hosts muito falantes
 
 **MITRE ATT&CK:** `T1071`
 
 Hosts com muitas conexões de rede por hora (possível C2).
+
+> **Limitação:** `bin()` só aceita 1s, 1m, 1h, 1d, 7d e 30d. O balde de 5 a 10 min, onde o beacon aparece, não existe; em 1h o beacon se dilui. Veja também "Beaconing · presença constante e baixo volume".
 
 ```text
 datasource("xdr")
@@ -67,7 +69,7 @@ datasource("xdr")
 | where eventCategory == "DeviceProcessEvents"
 | where eventTime > ago(7d)
 | project eventTime, endpointHostName, processCmd, parentCmd
-| where processCmd matches regex "(?i)(nc.exe|ncat|/dev/tcp|tcpclient|reverse.*shell|bash -i)"
+| where processCmd matches regex "(?i)((^|[^a-z0-9])(nc|ncat|netcat)([.]exe)? |/dev/tcp/|tcpclient|bash +-i|reverse.?shell)"
 | sort by eventTime desc
 | take 100
 ```
@@ -160,3 +162,22 @@ datasource("xdr")
 | take 100
 ```
 
+---
+
+## Beaconing · presença constante e baixo volume
+
+**MITRE ATT&CK:** `T1071`
+
+Host que fala com a rede quase todo minuto, mas com poucas conexões por minuto: assinatura de beacon (presença constante, volume baixo).
+
+> **Limitação:** a contagem é por host, não por destino, e 1 min é o menor balde útil que o `bin()` aceita (5 min não existe). Agentes de monitoramento também aparecem: compare com a baseline antes de escalar.
+
+```text
+datasource("xdr")
+| where eventCategory == "DeviceNetworkEvents"
+| where eventTime > ago(1d)
+| summarize hits = count() by endpointHostName, minuto = bin(eventTime, 1m)
+| summarize minutosAtivos = count(), mediaHits = avg(hits) by endpointHostName
+| where minutosAtivos >= 60 and mediaHits <= 3
+| top 50 by minutosAtivos desc
+```
