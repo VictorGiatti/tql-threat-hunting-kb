@@ -2,6 +2,8 @@ name: release
 
 # Versão nova no CHANGELOG.md chegando na main vira tag anotada + Release no GitHub.
 # Para marcar uma versão antiga: Actions → release → Run workflow, com versão e commit.
+# Se os workflows daquele commit forem diferentes dos da main, o GitHub não deixa o
+# token do Actions criar a tag: crie a tag à mão e rode de novo (só a Release é criada).
 
 on:
   push:
@@ -29,10 +31,10 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Tag anotada e Release a partir do CHANGELOG
@@ -58,7 +60,10 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git tag -a "$versao" "$alvo" -m "$titulo"
-            git push origin "refs/tags/$versao"
+            if ! git push origin "refs/tags/$versao"; then
+              echo "::error::O GitHub não deixa o token do Actions criar tag num commit cujos workflows diferem dos da main. Crie a tag à mão e rode este workflow de novo (ele publica a Release na tag existente): git tag -a $versao $(git rev-parse --short "$alvo") -m \"$titulo\" && git push origin $versao"
+              exit 1
+            fi
           fi
 
           latest=false
