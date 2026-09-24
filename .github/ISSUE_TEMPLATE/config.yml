@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Sintaxe & performance do TQL
+    url: https://github.com/VictorGiatti/tql-threat-hunting-kb/blob/main/sintaxe-e-performance.md
+    about: Regras da linguagem, limites do TQL e o checklist de "voltou vazio" antes de abrir issue.

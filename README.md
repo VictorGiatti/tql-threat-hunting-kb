@@ -1,5 +1,9 @@
 # Base de Conhecimento · Threat Hunting com TQL
 
+[![validar](https://github.com/VictorGiatti/tql-threat-hunting-kb/actions/workflows/validar.yml/badge.svg)](https://github.com/VictorGiatti/tql-threat-hunting-kb/actions/workflows/validar.yml)
+[![MITRE ATT&CK](https://img.shields.io/badge/MITRE-ATT%26CK-8c101f)](https://attack.mitre.org/)
+[![Trend Vision One · TQL](https://img.shields.io/badge/Trend%20Vision%20One-TQL-d71920)](sintaxe-e-performance.md)
+
 Consultas de caça a ameaças (threat hunting) para o **Trend Vision One → XDR Data Explorer**, escritas em **TQL (Trend Query Language)** e organizadas por tática **MITRE ATT&CK**.
 
 **154 hunts · 17 categorias · cola de consultas · painel interativo**
@@ -30,7 +34,7 @@ A fonte dos dados é o **Data Lake do Vision One**, que reúne telemetria nativa
 - Sempre que souber, especifique `with (log_type="…", product_code="…")`: são filtros "de graça" e deixam a query muito mais rápida.
 - Comece com janela curta e use `project` cedo pra trazer só as colunas necessárias.
 - Ordene os filtros do barato pro caro: `==` e `in` antes de `contains` / `matches regex`.
-- Campo em array (ex.: `tags`): use `has` (ou `has_any`), nunca `contains`.
+- Campo em array (ex.: `tags`): use `has_any (…)`, nunca `contains`. Pra um valor só: `tags has_any ("MITRE.T1055")`.
 - Linha de comando (`processCmd`, `parentCmd`): use `matches regex "(?i)(…)"`. `has`/`has_any` são case-sensitive e perdem `iex`, `C$`, `/Create`.
 - Depois de `summarize ... by X`, só existem `X` e a métrica agregada: não dê `project` em coluna que o summarize removeu.
 - **Zero resultado só é resposta depois de confirmado**: coluna inexistente, `log_type` errado ou regex em coluna `dynamic` também voltam vazio, sem erro. Siga o [checklist](sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir) antes de reportar "nada encontrado".
@@ -81,14 +85,18 @@ tql-threat-hunting-kb/
 │   └── tqlcheck.py               # validador estático de TQL (roda sozinho numa query)
 ├── tests/
 │   └── amostras.json             # linhas de comando que cada hunt deve / não deve pegar
-├── .github/workflows/validar.yml # CI: lint + amostras + sincronia do painel
+├── .github/
+│   ├── workflows/validar.yml     # CI: lint + amostras + sincronia do painel
+│   ├── workflows/release.yml     # versão nova no CHANGELOG → tag + Release
+│   ├── ISSUE_TEMPLATE/           # formulários: hunt novo e hunt com problema
+│   └── pull_request_template.md  # checklist de PR
 ├── CONTRIBUTING.md               # como adicionar hunts
-└── CHANGELOG.md                  # histórico de versões
+└── CHANGELOG.md                  # histórico de versões (fonte da versão e das Releases)
 ```
 
 ## Validação
 
-Toda query passa por um validador antes de entrar na base, e o CI roda o mesmo em cada push e Pull Request:
+Toda query passa por um validador antes de entrar na base, e o CI roda o mesmo em cada Pull Request e em cada push na `main`:
 
 ```bash
 python scripts/kb.py lint    # funções que não existem no TQL, bin()/ago() inválidos, sem janela, sem take, has_any em linha de comando
@@ -116,4 +124,4 @@ São **consultas de exemplo**. Nomes de campo variam por fonte e schema, valide 
 
 ---
 
-*TQL Threat Hunting KB · v2.1.0 · Trend Vision One*
+*TQL Threat Hunting KB · v2.1.1 · Trend Vision One*

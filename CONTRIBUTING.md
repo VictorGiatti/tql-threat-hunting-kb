@@ -87,5 +87,23 @@ python scripts/kb.py lint && python scripts/kb.py test && python scripts/kb.py b
 git add .
 git commit -m "hunt: <categoria> - <título>"
 git push -u origin hunt/nome-curto
-# abra um Pull Request para revisão
+# abra um Pull Request para revisão (o template já traz o checklist)
 ```
+
+### Versão nova
+
+A versão sai do [`CHANGELOG.md`](CHANGELOG.md). Pra lançar, adicione no topo uma seção `## vX.Y.Z · AAAA-MM-DD` com as notas e rode `python scripts/kb.py build` (atualiza o rodapé do README). Quando o PR entra na `main`, o workflow `release` cria a tag anotada e a Release no GitHub com essas notas.
+
+### Mensagens de commit
+
+Prefixo curto, em português, dizendo o que muda:
+
+| Prefixo | Quando usar | Exemplo |
+|---|---|---|
+| `hunt:` | hunt novo | `hunt: persistência - webshell em w3wp/sqlservr` |
+| `fix:` | query corrigida (falso negativo, ruído, erro no console) | `fix(persistencia): net user /add com argumentos no meio` |
+| `docs:` | README, sintaxe, cola, CONTRIBUTING | `docs: checklist de voltou vazio` |
+| `painel:` | HTML/JS do painel (os dados saem do `build`) | `painel: link MITRE nas técnicas` |
+| `ci:` / `chore:` | scripts, CI, arrumação do repositório | `ci: roda uma vez por PR` |
+
+Tem ideia de hunt mas não a query pronta? Abra uma issue com o formulário **Hunt novo**. Hunt que deu erro, voltou vazio sem motivo ou trouxe ruído: formulário **Hunt com problema**.

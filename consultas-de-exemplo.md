@@ -15,7 +15,7 @@
 
 ## 0) A primeira query (para testar que está tudo ok)
 
-As peças da linguagem: `datasource(...)` escolhe a fonte · `where` filtra · `summarize count() by` agrega · `project` escolhe colunas · `sort by` ordena · `take` limita · tempo com `ago(1d)`, `ago(24h)`, `ago(7d)`.
+As peças da linguagem: `datasource(...)` escolhe a fonte · `where` filtra · `summarize total = count() by` agrega (o alias é obrigatório) · `project` escolhe colunas · `sort by` ordena · `take` limita · tempo com `ago(1h)`, `ago(1d)`, `ago(7d)`.
 
 Uma query leve só pra confirmar que o backend responde:
 ```
@@ -106,7 +106,7 @@ datasource("xdr") with (log_type="thirdparty")
 **2.4, Nativo + terceiro lado a lado, por produto e host** (mostra o Data Lake único)
 ```
 datasource("xdr")
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | summarize eventos = count() by pname, endpointHostName
 | sort by eventos desc
 | take 50
@@ -202,7 +202,7 @@ datasource("xdr")
 ```
 datasource("xdr") with (log_type="detection")
 | where eventTime > ago(7d)
-| where tags has "MITRE.T1055"
+| where tags has_any ("MITRE.T1055")
 | project eventTime, endpointHostName, eventName, ruleName, tags
 | sort by eventTime desc
 | take 100
@@ -212,7 +212,7 @@ datasource("xdr") with (log_type="detection")
 ```
 datasource("xdr")
 | where eventCategory == "DeviceNetworkEvents"
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | summarize conexoes = count() by endpointHostName
 | sort by conexoes desc
 | take 50
@@ -222,7 +222,7 @@ datasource("xdr")
 ```
 datasource("xdr")
 | where eventCategory == "DeviceLogonEvents"
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | summarize logons = count() by duser, endpointHostName
 | sort by logons desc
 | take 50
@@ -235,7 +235,7 @@ datasource("xdr")
 **5.1, Timeline de um host** (troque `NOME-DO-HOST` na linha `where`)
 ```
 datasource("xdr")
-| where eventTime > ago(24h)
+| where eventTime > ago(1d)
 | where endpointHostName == "NOME-DO-HOST"
 | project eventTime, eventCategory, eventName, processCmd
 | sort by eventTime desc
@@ -265,7 +265,7 @@ datasource("xdr") with (log_type="detection")
 **5.4, Processos executados por host (baseline rápido)**
 ```
 datasource("xdr")
-| where eventCategory == "DeviceProcessEvents" and eventTime > ago(24h)
+| where eventCategory == "DeviceProcessEvents" and eventTime > ago(1d)
 | summarize execucoes = count() by endpointHostName
 | sort by execucoes desc
 | take 20
@@ -278,8 +278,8 @@ datasource("xdr")
 - **"Request failed with status code 502" (ou 500/504):** é erro do **servidor/gateway**, não da sua query: geralmente temporário. Clique **Run query** de novo; se persistir, rode a query leve do bloco 0 (`take 10`, `ago(1h)`) pra ver se o backend voltou. Se continuar caindo, é a plataforma: retome depois.
 - **Squiggle vermelho / erro de sintaxe:** corrija antes de rodar: query inválida não executa. Passe o mouse no erro pra ver a mensagem.
 - **Campo não existe:** apague o nome e deixe o **autocomplete** sugerir o campo certo daquela fonte. (Ex.: não existe `initiatingProcessFileName`, use `parentCmd`.) Coluna inexistente costuma voltar **vazio, sem erro**.
-- **Campo em array (ex.: `tags`):** use `has`, não `contains`. Ex.: `tags has "MITRE.T1055"`. O `contains` só funciona em texto.
-- **Campos confirmados no ambiente:** `eventTime`, `pname`, `productCode`, `endpointHostName`, `processCmd`, `parentCmd`, `tags` (array → `has`), `eventId`, `eventName`, `eventSubName`, `ruleType`, `ruleName`, `duser`, `eventCategory`, `severity`.
+- **Campo em array (ex.: `tags`):** use `has_any`, não `contains`. Ex.: `tags has_any ("MITRE.T1055")`. Serve pra um valor ou vários; o `contains` só funciona em texto.
+- **Campos confirmados no ambiente:** `eventTime`, `pname`, `productCode`, `endpointHostName`, `processCmd`, `parentCmd`, `tags` (array → `has_any`), `eventId`, `eventName`, `eventSubName`, `ruleType`, `ruleName`, `duser`, `eventCategory`, `severity`.
 - **Voltou vazio:** siga o [checklist](sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir) antes de dizer "nada encontrado".
 - **Regra de ouro do summarize:** depois de `summarize ... by X`, só existem `X` e a métrica agregada (ex.: `total`). Não dá pra `project` colunas que foram agregadas.
 - **Query "à prova de falha":** a 1.2 ou a 2.1 retornam dados e ficam boas na tabela/gráfico. Troque a visualização pra gráfico de barras nos `summarize ... by ...`.

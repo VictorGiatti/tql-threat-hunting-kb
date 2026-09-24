@@ -14,3 +14,7 @@ npm-debug.log*
 
 # Renderizações locais
 *.pdf
+
+# Python (scripts/kb.py e scripts/tqlcheck.py)
+__pycache__/
+*.pyc
