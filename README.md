@@ -1,6 +1,8 @@
 # Base de Conhecimento · Threat Hunting com TQL
 
 [![validar](https://github.com/VictorGiatti/tql-threat-hunting-kb/actions/workflows/validar.yml/badge.svg)](https://github.com/VictorGiatti/tql-threat-hunting-kb/actions/workflows/validar.yml)
+[![MITRE ATT&CK](https://img.shields.io/badge/MITRE-ATT%26CK-8c101f)](https://attack.mitre.org/)
+[![Trend Vision One · TQL](https://img.shields.io/badge/Trend%20Vision%20One-TQL-d71920)](sintaxe-e-performance.md)
 
 Consultas de caça a ameaças (threat hunting) para o **Trend Vision One → XDR Data Explorer**, escritas em **TQL (Trend Query Language)** e organizadas por tática **MITRE ATT&CK**.
 
@@ -83,14 +85,17 @@ tql-threat-hunting-kb/
 │   └── tqlcheck.py               # validador estático de TQL (roda sozinho numa query)
 ├── tests/
 │   └── amostras.json             # linhas de comando que cada hunt deve / não deve pegar
-├── .github/workflows/validar.yml # CI: lint + amostras + sincronia do painel
+├── .github/
+│   ├── workflows/validar.yml     # CI: lint + amostras + sincronia do painel
+│   ├── ISSUE_TEMPLATE/           # formulários: hunt novo e hunt com problema
+│   └── pull_request_template.md  # checklist de PR
 ├── CONTRIBUTING.md               # como adicionar hunts
 └── CHANGELOG.md                  # histórico de versões
 ```
 
 ## Validação
 
-Toda query passa por um validador antes de entrar na base, e o CI roda o mesmo em cada push e Pull Request:
+Toda query passa por um validador antes de entrar na base, e o CI roda o mesmo em cada Pull Request e em cada push na `main`:
 
 ```bash
 python scripts/kb.py lint    # funções que não existem no TQL, bin()/ago() inválidos, sem janela, sem take, has_any em linha de comando

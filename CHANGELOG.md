@@ -8,7 +8,7 @@ Integra o branch `fix/revisao-doc-oficial` (29/07), que tinha ficado fora da `ma
 - **E-mail · Regras de e-mail que mais dispararam:** o alias do `mv-expand` não colide mais com o do `summarize` (`regraExpandida` / `regraId`).
 - **`tags`:** `has_any ("MITRE.T1055")` no lugar de `has "MITRE.T1055"` (Triagem, cola 4.4, README). Funciona com um valor ou vários.
 - `ago(24h)` padronizado para `ago(1d)`; `summarize count() by` da cola ganhou alias.
-- **Repositório:** CI roda uma vez por PR (antes rodava no push e no PR), com `workflow_dispatch` e permissão só de leitura; selo do CI no README; `.mailmap` unifica os nomes do mesmo autor; `__pycache__/` no `.gitignore`.
+- **Repositório:** CI roda uma vez por PR (antes rodava no push e no PR), com `workflow_dispatch` e permissão só de leitura; selos no README; template de PR e formulários de issue (**Hunt novo**, **Hunt com problema**); convenção de mensagens de commit no `CONTRIBUTING.md`; `.editorconfig`; `.mailmap` unifica os nomes do mesmo autor; `__pycache__/` no `.gitignore`.
 
 ## v2.1.0 · 2026-09-24
 

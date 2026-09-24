@@ -1,0 +1,42 @@
+name: Hunt com problema
+description: Hunt que dá erro no console, volta vazio quando não devia ou traz ruído demais.
+title: "fix: <título do hunt>"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Antes de abrir, passe pelo checklist [Voltou vazio? Confirme antes de concluir](https://github.com/VictorGiatti/tql-threat-hunting-kb/blob/main/sintaxe-e-performance.md#voltou-vazio-confirme-antes-de-concluir): `log_type` errado, coluna inexistente e regex em coluna `dynamic` também voltam vazio, sem erro.
+  - type: input
+    id: hunt
+    attributes:
+      label: Hunt
+      description: Título exatamente como está na base.
+      placeholder: Tarefa agendada / serviço novo
+    validations:
+      required: true
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: O que acontece
+      options:
+        - Erro ao rodar no console
+        - Falso negativo (não pega o que devia)
+        - Falso positivo (ruído demais)
+        - Coluna ou log_type não existe no meu tenant
+        - Outro
+    validations:
+      required: true
+  - type: textarea
+    id: detalhe
+    attributes:
+      label: Detalhe
+      description: Mensagem de erro, linha de comando que escapou ou que casou sem dever. Troque hostnames e usuários reais.
+    validations:
+      required: true
+  - type: input
+    id: fonte
+    attributes:
+      label: Fonte
+      description: log_type / product_code e janela de tempo usados.
+      placeholder: log_type="telemetry", ago(7d)

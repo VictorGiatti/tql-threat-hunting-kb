@@ -1,0 +1,67 @@
+name: Hunt novo
+description: Sugira um hunt que funcionou (ou que você gostaria de ter) no Vision One.
+title: "hunt: <categoria> - <título>"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por somar à base. Se já tem a query pronta, dá pra abrir o Pull Request direto: veja o [guia de contribuição](https://github.com/VictorGiatti/tql-threat-hunting-kb/blob/main/CONTRIBUTING.md).
+  - type: input
+    id: titulo
+    attributes:
+      label: Título
+      description: O que o hunt acha, não o comando.
+      placeholder: Servidor web ou SQL gerando shell (webshell)
+    validations:
+      required: true
+  - type: dropdown
+    id: categoria
+    attributes:
+      label: Categoria
+      options:
+        - Execução
+        - Evasão de defesa
+        - Credenciais
+        - Persistência
+        - Escalonamento de privilégio
+        - Descoberta
+        - Movimento lateral
+        - Coleta
+        - Rede / C2
+        - Exfiltração
+        - Impacto / Ransomware
+        - Identidade
+        - E-mail
+        - Nuvem
+        - Firewall (3rd-party)
+        - Triagem
+        - Visão geral
+        - Outra (explique abaixo)
+    validations:
+      required: true
+  - type: input
+    id: mitre
+    attributes:
+      label: Técnica MITRE ATT&CK
+      placeholder: T1505.003
+  - type: textarea
+    id: descricao
+    attributes:
+      label: O que ele procura e por quê
+      placeholder: Uma ou duas linhas.
+    validations:
+      required: true
+  - type: textarea
+    id: query
+    attributes:
+      label: Query TQL
+      description: Com janela de tempo e, se não agrega, terminando em take/top. Linha de comando com matches regex "(?i)(…)".
+      render: text
+  - type: checkboxes
+    id: validacao
+    attributes:
+      label: Validação
+      options:
+        - label: Rodei a query no console do Vision One
+        - label: Rodei `python scripts/kb.py lint` sem erros
