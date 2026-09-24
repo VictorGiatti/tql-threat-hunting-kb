@@ -127,6 +127,17 @@ DYNAMIC_COLUMNS = {
     "mailSmtpFromAddresses", "objectIp",
 }
 
+# String columns whose case is chosen by whoever typed the command: the
+# attacker. `has` / `has_any` / `has_all` are case-sensitive in TQL, so a list
+# like ("IEX", "C$") silently misses `iex` and `c$`. On these columns that is an
+# ERROR; use `matches regex "(?i)(...)"` (string columns, so regex works).
+CASE_VARYING_COLUMNS = {
+    "processCmd", "parentCmd", "objectCmd", "processFilePath", "objectFilePath",
+}
+# Same risk, lower odds: the binary name is usually lowercase, but not always
+# (PowerShell.exe, CMD.EXE). Worth a WARN.
+CASE_VARYING_WARN_COLUMNS = {"processName", "parentName", "objectName"}
+
 # Chart types verified with the render operator.
 VALID_RENDER_TYPES = {"linechart", "columnchart", "barchart", "piechart", "table", "timechart"}
 
@@ -328,6 +339,22 @@ def validate(query):
                 add("WARN", k, f"`contains` on array column `{col}` is unreliable",
                     "use `has` for a single value or `has_any (...)` for several")
 
+    # --- case-sensitive has/has_any on attacker-controlled strings -----------
+    for k, line in enumerate(clean_lines, 1):
+        for m in re.finditer(r'\b([A-Za-z_][\w]*)\s+(has_any|has_all|has)\b', line):
+            col, op = m.group(1), m.group(2)
+            hint = (f'`{op}` is case-sensitive; write the terms in lowercase inside '
+                    f'`{col} matches regex "(?i)(term1|term2)"` so IEX and iex, C$ and c$, '
+                    f'/Create and /create all match. Escape a literal dot as [.]')
+            if col in CASE_VARYING_COLUMNS:
+                add("ERROR", k,
+                    f"`{op}` on `{col}` misses case variants the attacker controls",
+                    hint)
+            elif col in CASE_VARYING_WARN_COLUMNS:
+                add("WARN", k,
+                    f"`{op}` on `{col}` is case-sensitive (PowerShell.exe vs powershell.exe)",
+                    hint)
+
     # --- the quote-escaping defect -------------------------------------------
     if re.search(r'"\s*\\"\s*"', query):
         add("ERROR", None,
@@ -374,7 +401,10 @@ GOOD = [
     # straight endpoint hunt
     'datasource("xdr")\n| where eventCategory == "DeviceProcessEvents"\n'
     '| where eventTime > ago(7d)\n| project eventTime, endpointHostName, processCmd\n'
-    '| where processCmd has_any ("-enc", "IEX")\n| sort by eventTime desc\n| take 100',
+    '| where processCmd matches regex "(?i)(-enc|iex)"\n| sort by eventTime desc\n| take 100',
+    # has on an array column with fixed-case values is fine
+    'datasource("xdr") with (log_type="detection")\n| where eventTime > ago(7d)\n'
+    '| where tags has "MITRE.T1055"\n| take 100',
     # aggregation with a named bin and a chart
     'datasource("xdr") with (log_type="identitytel", product_code="aad")\n'
     '| where eventTime > ago(1d)\n| where eventName == "IDENTITY_IAM_SIGN_INS"\n'
@@ -399,6 +429,11 @@ BAD = [
     ('datasource("xdr")\n| where eventTime > ago(1d) && severity >= 8\n| take 5', "&&"),
     ('datasource("xdr")\n| where eventTime > ago(1d)\n| take 10\n| GROUP BY host', "GROUP BY"),
     ('search "192.168.1.50"', "search"),
+    # case-sensitive list on a command line: `iex` and `c$` slip through
+    ('datasource("xdr")\n| where eventTime > ago(1d)\n'
+     '| where processCmd has_any ("IEX", "C$")\n| take 10', "case"),
+    ('datasource("xdr")\n| where eventTime > ago(1d)\n'
+     '| where parentCmd has "winword"\n| take 10', "case"),
 ]
 
 

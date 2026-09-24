@@ -35,10 +35,6 @@ ORDER = [
     "nuvem", "firewall-3rd-party", "triagem", "visao-geral",
 ]
 
-# Colunas de linha de comando: o atacante controla a caixa, então has/has_any
-# (case-sensitive) deixa passar variações como IEX/iex e C$/c$.
-CMD_COLUMNS = ("processCmd", "parentCmd", "objectCmd", "processFilePath", "objectFilePath")
-
 MITRE_TOKEN = re.compile(r"^T\d{4}(\.\d{3})?$")
 
 
@@ -137,7 +133,9 @@ def code_blocks(text):
 
 
 def lint_query(q):
-    """Devolve [(nível, mensagem)] combinando o tqlcheck com as regras da base."""
+    """Devolve [(nível, mensagem)] do tqlcheck, com a política da base aplicada.
+
+    O tqlcheck já recusa has/has_any em linha de comando (case-sensitive)."""
     out = []
     for f in tqlcheck.validate(q):
         level = f.level
@@ -147,11 +145,6 @@ def lint_query(q):
             continue
         loc = f"linha {f.line}: " if f.line else ""
         out.append((level, loc + f.message + (f" ({f.hint})" if f.hint else "")))
-    for k, line in enumerate(q.split("\n"), 1):
-        for col in CMD_COLUMNS:
-            if re.search(rf"\b{col}\s+(has|has_any|has_all)\b", line):
-                out.append(("ERROR", f"linha {k}: `has`/`has_any` em `{col}` é case-sensitive e perde "
-                                     f"variações de caixa; use matches regex \"(?i)...\""))
     return out
 
 
